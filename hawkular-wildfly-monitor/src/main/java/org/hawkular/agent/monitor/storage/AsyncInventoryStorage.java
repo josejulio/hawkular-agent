@@ -143,7 +143,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
             String metricTypeId = getInventoryId(metric.getMeasurementType());
             String metricTypePath = newPathPrefix().metricType(metricTypeId).get().toString();
 
-            Metric.Blueprint blueprint = new Metric.Blueprint(metricTypePath, metricId, metric.getProperties());
+            Metric.Blueprint blueprint = new Metric.Blueprint(metricTypePath, metricId,
+                    metric.getName().getNameString(), metric.getProperties(), null, null);
 
             entity(blueprint, Metric.class);
 
@@ -175,8 +176,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
             }
 
             org.hawkular.inventory.api.model.MetricType.Blueprint blueprint = //
-            new org.hawkular.inventory.api.model.MetricType.Blueprint(getInventoryId(metricType), mu, metricDataType,
-                    metricType.getProperties());
+            new org.hawkular.inventory.api.model.MetricType.Blueprint(getInventoryId(metricType),
+                    metricType.getName().getNameString(), mu, metricDataType, metricType.getProperties(), null, null);
 
             entity(blueprint, org.hawkular.inventory.api.model.MetricType.class);
 
@@ -189,7 +190,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
          */
         private void operation(Operation<? extends ResourceType<?, ?, ?, ?>> operation) {
             OperationType.Blueprint blueprint = new OperationType.Blueprint(getInventoryId(operation),
-                    operation.getProperties());
+                    operation.getName().getNameString(), operation.getProperties(), null, null);
 
             entity(blueprint, OperationType.class);
         }
@@ -249,9 +250,13 @@ public class AsyncInventoryStorage implements InventoryStorage {
             org.hawkular.inventory.api.model.Resource.Blueprint rPojo;
             String resourceTypePath = newPathPrefix().resourceType(getInventoryId(resource.getResourceType())).get()
                     .toString();
-            rPojo = new org.hawkular.inventory.api.model.Resource.Blueprint(getInventoryId(resource),
+            rPojo = new org.hawkular.inventory.api.model.Resource.Blueprint(
+                    getInventoryId(resource),
+                    resource.getName().getNameString(),
                     resourceTypePath,
-                    resource.getProperties());
+                    resource.getProperties(),
+                    null,
+                    null);
 
             StringBuilder parentPath = new StringBuilder();
             Resource<?, ?, ?, ?, ?> parent = resource.getParent();
@@ -320,7 +325,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
 
             org.hawkular.inventory.api.model.ResourceType.Blueprint blueprint = //
             new org.hawkular.inventory.api.model.ResourceType.Blueprint(getInventoryId(resourceType),
-                    resourceType.getProperties());
+                    resourceType.getName().getNameString(), resourceType.getProperties(), null, null);
             entity(blueprint, org.hawkular.inventory.api.model.ResourceType.class);
 
             CanonicalPath parentPath = newPathPrefix().resourceType(getInventoryId(resourceType)).get();
