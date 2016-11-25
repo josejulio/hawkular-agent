@@ -122,20 +122,20 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-controller</artifactId>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-controller</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-controller-client</artifactId>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-controller-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-host-controller</artifactId>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-host-controller</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -146,8 +146,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-subsystem-test</artifactId>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-subsystem-test</artifactId>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
