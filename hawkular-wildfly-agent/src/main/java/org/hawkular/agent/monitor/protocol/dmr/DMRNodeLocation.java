@@ -17,6 +17,7 @@
 package org.hawkular.agent.monitor.protocol.dmr;
 
 import org.hawkular.agent.monitor.inventory.NodeLocation;
+import org.hawkular.agent.monitor.util.PathAddressExtension;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.dmr.ModelNode;
 
@@ -46,7 +47,7 @@ public class DMRNodeLocation implements NodeLocation {
 
     public static DMRNodeLocation of(String path, boolean resolveExpressions, boolean includeDefaults) {
         return new DMRNodeLocation(
-                "/".equals(path) ? PathAddress.EMPTY_ADDRESS : PathAddress.parseCLIStyleAddress(path),
+                "/".equals(path) ? PathAddress.EMPTY_ADDRESS : PathAddressExtension.parseCLIStyleAddress(path),
                 resolveExpressions, includeDefaults);
     }
 

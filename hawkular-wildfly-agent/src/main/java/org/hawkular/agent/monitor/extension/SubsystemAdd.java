@@ -24,11 +24,14 @@ import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.ProcessType;
+import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.as.controller.registry.Resource;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceTarget;
+
+import java.util.List;
 
 public class SubsystemAdd extends AbstractAddStepHandler {
     private static final MsgLogger log = AgentLoggers.getLogger(SubsystemAdd.class);
@@ -38,10 +41,11 @@ public class SubsystemAdd extends AbstractAddStepHandler {
         super(SubsystemAttributes.ATTRIBUTES);
     }
 
-    @Override
-    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
-            throws OperationFailedException {
 
+    @Override
+    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
+                                  ServiceVerificationHandler verificationHandler,
+                                  List<ServiceController<?>> newControllers) throws OperationFailedException {
         ModelNode subsystemConfig = Resource.Tools.readModel(context.readResource(PathAddress.EMPTY_ADDRESS));
         MonitorServiceConfiguration config = new MonitorServiceConfigurationBuilder(subsystemConfig, context).build();
 

@@ -60,6 +60,7 @@ import org.hawkular.agent.monitor.protocol.platform.Constants.PlatformMetricType
 import org.hawkular.agent.monitor.protocol.platform.Constants.PlatformResourceType;
 import org.hawkular.agent.monitor.protocol.platform.PlatformNodeLocation;
 import org.hawkular.agent.monitor.protocol.platform.PlatformPath;
+import org.hawkular.agent.monitor.util.PathAddressExtension;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.as.controller.PathAddress;
@@ -1016,7 +1017,7 @@ public class MonitorServiceConfigurationBuilder {
         } else if ("/".equals(path)) {
             return PathAddress.EMPTY_ADDRESS;
         } else {
-            return PathAddress.parseCLIStyleAddress(path);
+            return PathAddressExtension.parseCLIStyleAddress(path);
         }
     }
 
