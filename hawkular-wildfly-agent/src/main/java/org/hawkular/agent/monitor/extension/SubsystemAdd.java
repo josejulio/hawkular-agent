@@ -16,6 +16,8 @@
  */
 package org.hawkular.agent.monitor.extension;
 
+import java.util.List;
+
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.service.MonitorService;
@@ -30,8 +32,6 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceBuilder;
 import org.jboss.msc.service.ServiceController;
 import org.jboss.msc.service.ServiceTarget;
-
-import java.util.List;
 
 public class SubsystemAdd extends AbstractAddStepHandler {
     private static final MsgLogger log = AgentLoggers.getLogger(SubsystemAdd.class);

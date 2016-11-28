@@ -16,6 +16,8 @@
  */
 package org.hawkular.agent.monitor.extension;
 
+import java.util.List;
+
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.protocol.EndpointService;
@@ -24,10 +26,13 @@ import org.hawkular.agent.monitor.protocol.ProtocolServices;
 import org.hawkular.agent.monitor.protocol.dmr.DMRNodeLocation;
 import org.hawkular.agent.monitor.protocol.dmr.DMRSession;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.hawkular.agent.monitor.util.Util;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceController;
 
 public class LocalDMRAdd extends MonitorServiceAddStepHandler {
     private static final MsgLogger log = AgentLoggers.getLogger(LocalDMRAdd.class);
@@ -39,8 +44,9 @@ public class LocalDMRAdd extends MonitorServiceAddStepHandler {
     }
 
     @Override
-    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
-            throws OperationFailedException {
+    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
+                                  ServiceVerificationHandler verificationHandler,
+                                  List<ServiceController<?>> newControllers) throws OperationFailedException {
 
         if (context.isBooting()) {
             return;
@@ -57,7 +63,7 @@ public class LocalDMRAdd extends MonitorServiceAddStepHandler {
         ProtocolServices newServices = monitorService.createProtocolServicesBuilder().dmrProtocolService(
                 monitorService.getLocalModelControllerClientFactory(), config.getDmrConfiguration()).build();
         EndpointService<DMRNodeLocation, DMRSession> endpointService = newServices.getDmrProtocolService()
-                .getEndpointServices().get(context.getCurrentAddressValue());
+                .getEndpointServices().get(OperationContextExtension.getCurrentAddressValue(context, operation));
 
         // put the new endpoint service in the original protocol services container
         ProtocolService<DMRNodeLocation, DMRSession> dmrService = monitorService.getProtocolServices()

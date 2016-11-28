@@ -26,6 +26,7 @@ import org.hawkular.agent.monitor.protocol.dmr.DMRNodeLocation;
 import org.hawkular.agent.monitor.protocol.dmr.DMRSession;
 import org.hawkular.agent.monitor.scheduler.SchedulerService;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.hawkular.agent.monitor.util.Util;
 import org.jboss.as.controller.AbstractWriteAttributeHandler;
 import org.jboss.as.controller.AttributeDefinition;
@@ -87,7 +88,7 @@ public class LocalDMRDefinition extends PersistentResourceDefinition {
                         MonitorService monitorService = getMonitorService(context);
                         ProtocolService<DMRNodeLocation, DMRSession> dmrService = monitorService.getProtocolServices()
                                 .getDmrProtocolService();
-                        String thisEndpointName = context.getCurrentAddressValue();
+                        String thisEndpointName = OperationContextExtension.getCurrentAddressValue(context, operation);
 
                         if (newBool) {
                             // add the endpoint so it begins to be monitored

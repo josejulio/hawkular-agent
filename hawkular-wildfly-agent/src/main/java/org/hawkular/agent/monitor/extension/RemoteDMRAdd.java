@@ -16,6 +16,8 @@
  */
 package org.hawkular.agent.monitor.extension;
 
+import java.util.List;
+
 import org.hawkular.agent.monitor.extension.MonitorServiceConfiguration.EndpointConfiguration;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
@@ -25,10 +27,13 @@ import org.hawkular.agent.monitor.protocol.ProtocolServices;
 import org.hawkular.agent.monitor.protocol.dmr.DMRNodeLocation;
 import org.hawkular.agent.monitor.protocol.dmr.DMRSession;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.hawkular.agent.monitor.util.Util;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceController;
 
 public class RemoteDMRAdd extends MonitorServiceAddStepHandler {
     private static final MsgLogger log = AgentLoggers.getLogger(RemoteDMRAdd.class);
@@ -40,9 +45,9 @@ public class RemoteDMRAdd extends MonitorServiceAddStepHandler {
     }
 
     @Override
-    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
-            throws OperationFailedException {
-
+    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
+                                  ServiceVerificationHandler verificationHandler,
+                                  List<ServiceController<?>> newControllers) throws OperationFailedException {
         if (context.isBooting()) {
             return;
         }
@@ -53,7 +58,7 @@ public class RemoteDMRAdd extends MonitorServiceAddStepHandler {
         }
 
         MonitorServiceConfiguration config = Util.getMonitorServiceConfiguration(context);
-        String newEndpointName = context.getCurrentAddressValue();
+        String newEndpointName = OperationContextExtension.getCurrentAddressValue(context, operation);
 
         // Register the feed under the tenant of the new managed server.
         // If endpoint has a null tenant then there is nothing to do since it will just reuse the agent's tenant ID

@@ -16,16 +16,21 @@
  */
 package org.hawkular.agent.monitor.extension;
 
+import java.util.List;
+
 import org.hawkular.agent.monitor.protocol.EndpointService;
 import org.hawkular.agent.monitor.protocol.ProtocolService;
 import org.hawkular.agent.monitor.protocol.ProtocolServices;
 import org.hawkular.agent.monitor.protocol.platform.PlatformNodeLocation;
 import org.hawkular.agent.monitor.protocol.platform.PlatformSession;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.hawkular.agent.monitor.util.Util;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
+import org.jboss.as.controller.ServiceVerificationHandler;
 import org.jboss.dmr.ModelNode;
+import org.jboss.msc.service.ServiceController;
 
 public class PlatformAdd extends MonitorServiceAddStepHandler {
 
@@ -36,9 +41,9 @@ public class PlatformAdd extends MonitorServiceAddStepHandler {
     }
 
     @Override
-    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model)
-            throws OperationFailedException {
-
+    protected void performRuntime(OperationContext context, ModelNode operation, ModelNode model,
+                                  ServiceVerificationHandler verificationHandler,
+                                  List<ServiceController<?>> newControllers) throws OperationFailedException {
         if (context.isBooting()) {
             return;
         }
@@ -54,7 +59,7 @@ public class PlatformAdd extends MonitorServiceAddStepHandler {
         ProtocolServices newServices = monitorService.createProtocolServicesBuilder()
                 .platformProtocolService(config.getPlatformConfiguration()).build();
         EndpointService<PlatformNodeLocation, PlatformSession> endpointService = newServices
-                .getPlatformProtocolService().getEndpointServices().get(context.getCurrentAddressValue());
+                .getPlatformProtocolService().getEndpointServices().get(OperationContextExtension.getCurrentAddressValue(context, operation));
 
         // put the new endpoint service in the original protocol services container
         ProtocolService<PlatformNodeLocation, PlatformSession> platformService = monitorService.getProtocolServices()

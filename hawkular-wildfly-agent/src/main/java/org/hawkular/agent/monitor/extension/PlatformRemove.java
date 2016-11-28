@@ -19,6 +19,7 @@ package org.hawkular.agent.monitor.extension;
 import org.hawkular.agent.monitor.protocol.ProtocolService;
 import org.hawkular.agent.monitor.scheduler.SchedulerService;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.OperationFailedException;
 import org.jboss.dmr.ModelNode;
@@ -45,7 +46,7 @@ public class PlatformRemove extends MonitorServiceRemoveStepHandler {
 
         SchedulerService schedulerService = monitorService.getSchedulerService();
         ProtocolService<?, ?> platformService = monitorService.getProtocolServices().getPlatformProtocolService();
-        String doomedEndpointName = context.getCurrentAddressValue();
+        String doomedEndpointName = OperationContextExtension.getCurrentAddressValue(context, operation);
         platformService.remove(doomedEndpointName, schedulerService);
     }
 }

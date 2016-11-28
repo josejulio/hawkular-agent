@@ -27,6 +27,7 @@ import org.hawkular.agent.monitor.protocol.platform.PlatformNodeLocation;
 import org.hawkular.agent.monitor.protocol.platform.PlatformSession;
 import org.hawkular.agent.monitor.scheduler.SchedulerService;
 import org.hawkular.agent.monitor.service.MonitorService;
+import org.hawkular.agent.monitor.util.OperationContextExtension;
 import org.hawkular.agent.monitor.util.Util;
 import org.jboss.as.controller.AbstractWriteAttributeHandler;
 import org.jboss.as.controller.AttributeDefinition;
@@ -93,7 +94,7 @@ public class PlatformDefinition extends PersistentResourceDefinition {
                         MonitorService monitorService = getMonitorService(context);
                         ProtocolService<PlatformNodeLocation, PlatformSession> platformService = monitorService
                                 .getProtocolServices().getPlatformProtocolService();
-                        String thisEndpointName = context.getCurrentAddressValue();
+                        String thisEndpointName = OperationContextExtension.getCurrentAddressValue(context, operation);
 
                         if (newBool) {
                             // add the endpoint so it begins to be monitored
