@@ -176,7 +176,7 @@ public class MonitorService implements Service<MonitorService> {
                         port = socketBinding.getAbsolutePort();
                     } else {
                         OutboundSocketBinding serverBinding = serverOutboundSocketBindingValue.getValue();
-                        address = serverBinding.getResolvedDestinationAddress().getHostName();
+                        address = serverBinding.getDestinationAddress().getHostName();
                         port = serverBinding.getDestinationPort();
                     }
                     String protocol = (bootStorageAdapter.isUseSSL()) ? "https" : "http";
