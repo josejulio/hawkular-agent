@@ -603,8 +603,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 String jsonPayload = Util.toJson(sync);
                 Map<String, String> headers = getTenantHeader(tenantIdToUse);
 
-                log.tracef("Syncing [%d] resources to inventory: headers=[%s] body=[%s]",
-                        totalResourceCount, headers, jsonPayload);
+                log.trace(String.format("Syncing [%d] resources to inventory: headers=[%s] body=[%s]",
+                        totalResourceCount, headers, jsonPayload));
 
                 Request request = this.httpClientBuilder.buildJsonPostRequest(url.toString(), headers, jsonPayload);
                 Call call = this.httpClientBuilder.getHttpClient().newCall(request);
@@ -614,7 +614,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 try {
                     final long durationNanos = timer.stop();
 
-                    log.tracef("Received sync response from inventory: code [%d]", response.code());
+                    log.trace(String.format("Received sync response from inventory: code [%d]", response.code()));
 
                     // HTTP status of 204 means success, anything else is an error
                     if (response.code() != 204) {
@@ -662,7 +662,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 String jsonPayload = Util.toJson(sync);
                 Map<String, String> headers = getTenantHeader(tenantIdToUse);
 
-                log.tracef("Syncing resource type to inventory: headers=[%s] body=[%s]", headers, jsonPayload);
+                log.trace(String.format("Syncing resource type to inventory: headers=[%s] body=[%s]",
+                        headers, jsonPayload));
 
                 Request request = this.httpClientBuilder.buildJsonPostRequest(url.toString(), headers, jsonPayload);
                 Call call = this.httpClientBuilder.getHttpClient().newCall(request);
@@ -672,7 +673,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 try {
                     final long durationNanos = timer.stop();
 
-                    log.tracef("Received sync response from inventory: code [%d]", response.code());
+                    log.trace(String.format("Received sync response from inventory: code [%d]", response.code()));
 
                     // HTTP status of 204 means success, anything else is an error
                     if (response.code() != 204) {
@@ -719,7 +720,8 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 String jsonPayload = Util.toJson(sync);
                 Map<String, String> headers = getTenantHeader(tenantIdToUse);
 
-                log.tracef("Syncing metric type to inventory: headers=[%s] body=[%s]", headers, jsonPayload);
+                log.trace(String.format("Syncing metric type to inventory: headers=[%s] body=[%s]",
+                        headers, jsonPayload));
 
                 Request request = this.httpClientBuilder.buildJsonPostRequest(url.toString(), headers, jsonPayload);
                 Call call = this.httpClientBuilder.getHttpClient().newCall(request);
@@ -729,7 +731,7 @@ public class AsyncInventoryStorage implements InventoryStorage {
                 try {
                     final long durationNanos = timer.stop();
 
-                    log.tracef("Received sync response from inventory: code [%d]", response.code());
+                    log.trace(String.format("Received sync response from inventory: code [%d]", response.code()));
 
                     // HTTP status of 204 means success, anything else is an error
                     if (response.code() != 204) {

@@ -293,7 +293,7 @@ public class DMRDriver implements Driver<DMRNodeLocation> {
                         }
                     }
                 } catch (UnknownHostException e) {
-                    log.warnf(e, "Could not parse IP address [%s]", oldValue);
+                    log.warn(String.format("Could not parse IP address [%s]", oldValue), e);
                 }
             }
         }

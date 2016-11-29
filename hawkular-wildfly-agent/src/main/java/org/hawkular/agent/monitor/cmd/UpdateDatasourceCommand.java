@@ -174,8 +174,8 @@ public class UpdateDatasourceCommand
                         .parentBuilder();
                 // }
             } else if (!newVal.equals(availPropValue)) {
-                log.tracef("Modification of [%s=%s]: ![%s].equals([%s])", propType, availPropName, newVal,
-                        availPropValue);
+                log.trace(String.format("Modification of [%s=%s]: ![%s].equals([%s])", propType, availPropName, newVal,
+                        availPropValue));
                 /* a modification: remove old and add the new value */
                 // if (isXaDatasource) {
                 // /* broken for XA */
@@ -193,8 +193,8 @@ public class UpdateDatasourceCommand
                 updatedPropNames.add(availPropName);
             } else {
                 /* no change */
-                log.tracef("No change for [%s=%s]: [%s].equals([%s])", propType, availPropName, newVal,
-                        availPropValue);
+                log.trace(String.format("No change for [%s=%s]: [%s].equals([%s])", propType, availPropName, newVal,
+                        availPropValue));
                 updatedPropNames.add(availPropName);
             }
         }

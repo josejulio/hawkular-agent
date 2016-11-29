@@ -88,7 +88,8 @@ public class UndeployApplicationCommand
         // find the operation we need to execute - make sure it exists
         Collection<Operation<DMRNodeLocation>> ops = resource.getResourceType().getOperations();
         boolean canUndeploy = false;
-        log.tracef("Searching for Undeploy operation among operations [%s] for resource [%s].", ops, resource.getID());
+        log.trace(String.format("Searching for Undeploy operation among operations [%s] for resource [%s].",
+                ops, resource.getID()));
         for (Operation<DMRNodeLocation> op : ops) {
             if ("Undeploy".equals(op.getName().getNameString())) {
                 canUndeploy = true;

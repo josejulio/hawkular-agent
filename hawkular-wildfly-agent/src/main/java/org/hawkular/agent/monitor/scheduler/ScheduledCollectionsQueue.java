@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,7 +96,7 @@ public class ScheduledCollectionsQueue<L, T extends MeasurementType<L>> {
                 // reschedule it
                 queueItem.setNextCollectionTime();
                 priorityQueue.offer(queueItem);
-                LOG.debugf("Popped measurement off queue and rescheduled: %s", queueItem);
+                LOG.debug(String.format("Popped measurement off queue and rescheduled: %s", queueItem));
 
                 // peek ahead at the next scheduled collection
                 next = priorityQueue.peek();

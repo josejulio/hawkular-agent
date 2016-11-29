@@ -909,14 +909,14 @@ public class MonitorService implements Service<MonitorService> {
             try {
                 response = httpclient.newCall(request).execute();
                 if (response.code() != 200) {
-                    log.debugf("Hawkular Metrics is not ready yet: %d/%s", response.code(), response.message());
+                    log.debug(String.format("Hawkular Metrics is not ready yet: %d/%s", response.code(), response.message()));
                 } else {
                     String bodyString = response.body().string();
                     if (checkReallyUp(bodyString)) {
-                        log.debugf("Hawkular Metrics is ready: %s", bodyString);
+                        log.debugf(String.format("Hawkular Metrics is ready: %s", bodyString));
                         break;
                     } else {
-                        log.debugf("Hawkular Metrics is still starting: %s", bodyString);
+                        log.debugf(String.format("Hawkular Metrics is still starting: %s", bodyString));
                     }
                 }
             } catch (Exception e) {

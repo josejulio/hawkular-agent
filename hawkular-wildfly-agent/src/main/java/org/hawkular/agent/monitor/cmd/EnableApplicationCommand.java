@@ -86,8 +86,8 @@ public class EnableApplicationCommand
 
         Collection<Operation<DMRNodeLocation>> ops = resource.getResourceType().getOperations();
         boolean canPerform = false;
-        log.tracef("Searching for [%s] operation among operations [%s] for resource [%s].", NAME, ops,
-                resource.getID());
+        log.trace(String.format("Searching for [%s] operation among operations [%s] for resource [%s].", NAME, ops,
+                resource.getID()));
         for (Operation<DMRNodeLocation> op : ops) {
             if (NAME.equals(op.getName().getNameString())) {
                 canPerform = true;

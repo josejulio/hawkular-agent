@@ -65,7 +65,7 @@ public abstract class AbstractRemoveModelNodeCommand<REQ extends ResourcePathReq
                     .assertSuccess();
         } catch (DmrApiException e) {
             /* A workaround for https://issues.jboss.org/browse/WFLY-5528 */
-            log.warnf("Attempt #2 to remove resource [%s], see JIRA WFLY-5528", modelNodePath);
+            log.warn(String.format("Attempt #2 to remove resource [%s], see JIRA WFLY-5528", modelNodePath));
             opResult = OperationBuilder
                     .remove()
                     .address()

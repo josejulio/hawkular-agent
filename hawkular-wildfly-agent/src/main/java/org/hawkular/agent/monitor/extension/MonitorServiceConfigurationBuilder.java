@@ -315,7 +315,7 @@ public class MonitorServiceConfigurationBuilder {
         ModelNode platformValueNode = asPropertyList.get(0).getValue();
         boolean typeSetsEnabled = getBoolean(platformValueNode, context, PlatformAttributes.ENABLED);
         if (!typeSetsEnabled) {
-            log.debugf("Platform monitoring is disabled");
+            log.debug(String.format("Platform monitoring is disabled"));
             return TypeSets.empty();
         }
 
@@ -952,7 +952,7 @@ public class MonitorServiceConfigurationBuilder {
                             RemoteDMRAttributes.METRIC_TAGS);
 
                     if (useSsl && securityRealm == null) {
-                        log.debugf("Using SSL with no security realm - will rely on the JVM truststore: " + name);
+                        log.debug(String.format("Using SSL with no security realm - will rely on the JVM truststore: " + name));
                     }
 
                     if (protocol == null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,9 +77,11 @@ class AvailsCollector<L> extends MeasurementCollector<L, AvailType<L>, AvailData
             } catch (InterruptedException ie) {
                 return;
             } catch (IllegalStateException ise) {
-                LOG.debugf("Cannot check avails for endpoint [%s] - not ready yet: %s", getEndpointService(), ise);
+                LOG.debug(String.format("Cannot check avails for endpoint [%s] - not ready yet: %s",
+                        getEndpointService(), ise));
             } catch (Throwable t) {
-                LOG.warnf(t, "Unexpected error caught in AvailsCollector for endpoint [%s]", getEndpointService());
+                LOG.warn(String.format("Unexpected error caught in AvailsCollector for endpoint [%s]",
+                        getEndpointService()), t);
             }
         }
     }

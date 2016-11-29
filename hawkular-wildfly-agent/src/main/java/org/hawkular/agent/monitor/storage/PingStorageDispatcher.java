@@ -64,7 +64,7 @@ public class PingStorageDispatcher implements Runnable {
         Set<AvailDataPoint> pings = this.config.getTenantIds().stream()
                 .map(t -> new AvailDataPoint(metricId, now, UP, t)).collect(Collectors.toSet());
 
-        log.tracef("Sending agent availability pings: %s", pings);
+        log.trace(String.format("Sending agent availability pings: %s", pings));
 
         // dispatch
         storageAdapter.storeAvails(pings, 0);

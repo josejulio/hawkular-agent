@@ -77,8 +77,8 @@ public class ExportJdrCommand extends AbstractResourcePathCommand<ExportJdrReque
 
         String requestedOpName = "JDR";
         Collection<Operation<DMRNodeLocation>> ops = resource.getResourceType().getOperations();
-        log.tracef("Searching for operation [%s] among operations [%s] for resource [%s].", requestedOpName, ops,
-                resource.getID());
+        log.trace(String.format("Searching for operation [%s] among operations [%s] for resource [%s].", requestedOpName, ops,
+                resource.getID()));
         for (Operation<DMRNodeLocation> op : ops) {
             if (requestedOpName.equals(op.getID().getIDString())) {
                 opLocation = dmrContext.getLocationResolver().absolutize(resource.getLocation(), op.getLocation());

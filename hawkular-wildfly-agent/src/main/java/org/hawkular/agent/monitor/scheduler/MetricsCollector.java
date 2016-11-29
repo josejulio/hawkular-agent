@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,9 +77,11 @@ class MetricsCollector<L> extends MeasurementCollector<L, MetricType<L>, MetricD
             } catch (InterruptedException ie) {
                 return;
             } catch (IllegalStateException ise) {
-                LOG.debugf("Cannot collect metrics for endpoint [%s] - not ready yet: %s", getEndpointService(), ise);
+                LOG.debug(String.format("Cannot collect metrics for endpoint [%s] - not ready yet: %s",
+                        getEndpointService()), ise);
             } catch (Throwable t) {
-                LOG.warnf(t, "Unexpected error caught in MetricsCollector for endpoint [%s]", getEndpointService());
+                LOG.warn(String.format("Unexpected error caught in MetricsCollector for endpoint [%s]",
+                        getEndpointService()), t);
             }
         }
     }
