@@ -16,6 +16,7 @@
  */
 package org.hawkular.agent.monitor.extension;
 
+import org.hawkular.agent.monitor.util.WildflyCompabilityUtils;
 import org.jboss.as.controller.Extension;
 import org.jboss.as.controller.ExtensionContext;
 import org.jboss.as.controller.SubsystemRegistration;
@@ -58,7 +59,7 @@ public class SubsystemExtension implements Extension {
                 MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION);
 
         // This subsystem should be runnable on a host
-        subsystem.setHostCapable();
+        WildflyCompabilityUtils.subsystemSetHostCapable(subsystem);
 
         final ManagementResourceRegistration registration = subsystem
                 .registerSubsystemModel(SubsystemDefinition.INSTANCE);
