@@ -90,11 +90,22 @@
         </pluginRepository>
       </pluginRepositories>
     </profile>
+    <profile>
+      <id>redhat-ga-repository</id>
+      <repositories>
+        <repository>
+          <id>redhat-ga</id>
+          <name>Red Hat GA Repository</name>
+          <url>https://maven.repository.redhat.com/ga/</url>
+        </repository>
+      </repositories>
+    </profile>
   </profiles>
 
   <activeProfiles>
     <activeProfile>securecentral</activeProfile>
     <activeProfile>jboss-public-repository</activeProfile>
+    <activeProfile>redhat-ga-repository</activeProfile>
   </activeProfiles>
 
 </settings>
