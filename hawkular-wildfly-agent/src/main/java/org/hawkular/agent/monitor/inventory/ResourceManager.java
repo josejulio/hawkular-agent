@@ -480,9 +480,9 @@ public final class ResourceManager<L> {
                 graphString.append(resource).append("\n");
             }
 
-            log.debug(String.format("%s\n%s\nDiscovery duration: [%d]ms", logMsg, graphString, duration));
+            log.debugf("%s\n%s\nDiscovery duration: [%d]ms", logMsg, graphString, duration);
         } catch (Exception e) {
-            log.debug("Cannot log tree graph", e);
+            log.debugf(e, "Cannot log tree graph");
         }
     }
 

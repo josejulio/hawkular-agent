@@ -70,7 +70,7 @@ public final class Discovery<L> {
         try {
 
             L parentLocation = parent != null ? parent.getLocation() : null;
-            log.debug(String.format("Discovering children of [%s] of type [%s]", parent, childType));
+            log.debugf("Discovering children of [%s] of type [%s]", parent, childType);
             final L childQuery = session.getLocationResolver().absolutize(parentLocation, childType.getLocation());
             Map<L, N> nativeResources = session.getDriver().fetchNodes(childQuery);
 
@@ -106,7 +106,7 @@ public final class Discovery<L> {
                     instance.setAssociatedMetricId(samplingService.generateAssociatedMetricId(instance));
                 }
 
-                log.debug(String.format("Discovered resource [%s]", resource));
+                log.debugf("Discovered resource [%s]", resource);
 
                 // tell our consumer about our new resource
                 if (resourceConsumer != null) {
@@ -173,8 +173,7 @@ public final class Discovery<L> {
                 builder.resourceConfigurationProperty(cpi);
             } catch (Exception e) {
                 // log this at debug because it is normally due to the fact the resource is down and expected
-                log.debug(String.format("Failed to discover config [%s] for resource [%s]", confPropType,
-                        parentAddress), e);
+                log.debugf(e, "Failed to discover config [%s] for resource [%s]", confPropType, parentAddress);
             }
         }
     }

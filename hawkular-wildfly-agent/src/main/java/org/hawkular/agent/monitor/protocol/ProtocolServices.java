@@ -117,8 +117,8 @@ public class ProtocolServices {
                             clientFactory, diagnostics.getDMRDiagnostics());
                     builder.endpointService(endpointService);
 
-                    log.debug(String.format("[%s] created with resource type sets [%s]", endpointService,
-                            server.getResourceTypeSets()));
+                    log.debugf("[%s] created with resource type sets [%s]", endpointService,
+                            server.getResourceTypeSets());
                 }
             }
 
@@ -150,8 +150,8 @@ public class ProtocolServices {
                             resourceTypeManager, diagnostics.getPlatformDiagnostics());
                     builder.endpointService(endpointService);
 
-                    log.debug(String.format("[%s] created with resource type sets [%s]", endpointService,
-                            server.getResourceTypeSets()));
+                    log.debugf("[%s] created with resource type sets [%s]", endpointService,
+                            server.getResourceTypeSets());
                 }
             }
 
@@ -268,7 +268,7 @@ public class ProtocolServices {
 
     private void stopAutoDiscovery() {
         if (this.autoDiscoveryExecutor != null) {
-            log.debug(String.format("Shutting down auto-discovery job"));
+            log.debugf("Shutting down auto-discovery job");
             this.autoDiscoveryExecutor.shutdownNow();
         }
     }

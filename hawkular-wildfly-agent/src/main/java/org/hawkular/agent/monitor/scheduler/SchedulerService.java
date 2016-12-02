@@ -132,8 +132,8 @@ public class SchedulerService implements InventoryListener {
         List<Resource<L>> resources = event.getPayload();
         SamplingService<L> service = event.getSamplingService();
 
-        log.debug(String.format("Scheduling jobs for [%d] new resources for endpoint [%s]",
-                resources.size(), service.getMonitoredEndpoint()));
+        log.debugf("Scheduling jobs for [%d] new resources for endpoint [%s]",
+                resources.size(), service.getMonitoredEndpoint());
 
         ((MeasurementScheduler) metricScheduler).schedule(service, resources);
         ((MeasurementScheduler) availScheduler).schedule(service, resources);
@@ -144,8 +144,8 @@ public class SchedulerService implements InventoryListener {
         List<Resource<L>> resources = event.getPayload();
         SamplingService<L> service = event.getSamplingService();
 
-        log.debug(String.format("Unscheduling jobs for [%d] obsolete resources for endpoint [%s]",
-                resources.size(), service.getMonitoredEndpoint()));
+        log.debugf("Unscheduling jobs for [%d] obsolete resources for endpoint [%s]",
+                resources.size(), service.getMonitoredEndpoint());
 
         unschedule(service, resources);
     }

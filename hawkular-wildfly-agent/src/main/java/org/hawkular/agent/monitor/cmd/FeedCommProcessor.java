@@ -139,7 +139,7 @@ public class FeedCommProcessor implements WebSocketListener {
             return;
         }
 
-        log.debug(String.format("About to connect a feed WebSocket client to endpoint [%s]", feedcommUrl));
+        log.debugf("About to connect a feed WebSocket client to endpoint [%s]", feedcommUrl);
 
         webSocketCall = webSocketClientBuilder.createWebSocketCall(feedcommUrl, null);
         webSocketCall.enqueue(this);
@@ -176,7 +176,7 @@ public class FeedCommProcessor implements WebSocketListener {
      * Call this when you know this processor object will never be used again.
      */
     public void destroy() {
-        log.debug("Destroying FeedCommProcessor");
+        log.debugf("Destroying FeedCommProcessor");
         this.destroyed = true;
         stopReconnectJobThread();
         disconnect();
@@ -331,7 +331,7 @@ public class FeedCommProcessor implements WebSocketListener {
                 // don't flood the log with these at the WARN level - its probably just because the server is down
                 // and we can't reconnect - while the server is down, our reconnect logic will cause this error
                 // to occur periodically. Our reconnect logic will log other messages.
-                log.trace(String.format("Feed communications had a failure - a reconnection is likely required: %s", e));
+                log.tracef("Feed communications had a failure - a reconnection is likely required: %s", e);
             } else {
                 log.warnFeedCommFailure("<null>", e);
             }
@@ -418,7 +418,7 @@ public class FeedCommProcessor implements WebSocketListener {
     public void onPong(Buffer buffer) {
         try {
             if (!buffer.equals(createPingBuffer())) {
-                log.debug(String.format("Failed to verify WebSocket pong [%s]", buffer.toString()));
+                log.debugf("Failed to verify WebSocket pong [%s]", buffer.toString());
             }
         } finally {
             buffer.close();
@@ -452,7 +452,7 @@ public class FeedCommProcessor implements WebSocketListener {
         }
 
         if (newReconnectJob != null) {
-            log.debug("Starting WebSocket reconnect thread");
+            log.debugf("Starting WebSocket reconnect thread");
             newReconnectJob.start();
         }
     }
@@ -460,7 +460,7 @@ public class FeedCommProcessor implements WebSocketListener {
     private void stopReconnectJobThread() {
         ReconnectJobThread reconnectJob = reconnectJobThread.getAndSet(null);
         if (reconnectJob != null) {
-            log.debug("Stopping WebSocket reconnect thread");
+            log.debugf("Stopping WebSocket reconnect thread");
             reconnectJob.interrupt();
         }
     }
@@ -504,7 +504,7 @@ public class FeedCommProcessor implements WebSocketListener {
         synchronized (pingExecutor) {
             stopPinging(); // cleans up anything left over from previous pinging
 
-            log.debug("Starting WebSocket ping");
+            log.debugf("Starting WebSocket ping");
             pingFuture = pingExecutor.scheduleAtFixedRate(
                     new Runnable() {
                         @Override
@@ -513,14 +513,14 @@ public class FeedCommProcessor implements WebSocketListener {
                                 try {
                                     webSocket.sendPing(createPingBuffer());
                                 } catch (IOException ioe) {
-                                    log.debug(String.format("Failed to send ping. Cause=%s", ioe.toString()));
+                                    log.debugf("Failed to send ping. Cause=%s", ioe.toString());
                                     disconnect(4000, "Ping failed"); // sendPing javadoc says to close on IOException
                                 } catch (IllegalStateException ise) {
-                                    log.debug(String.format("Cannot ping. WebSocket is already closed. Cause=%s", ise.toString()));
+                                    log.debugf("Cannot ping. WebSocket is already closed. Cause=%s", ise.toString());
                                 } catch (Exception e) {
                                     // Catch other problems so exception is not thrown which would stop the thread.
                                     // This will cover a race condition where webSocket may be null.
-                                    log.debug(String.format("Cannot ping. Cause=%s", e.toString()));
+                                    log.debugf("Cannot ping. Cause=%s", e.toString());
                                 }
                             }
                         }
@@ -531,7 +531,7 @@ public class FeedCommProcessor implements WebSocketListener {
     private void stopPinging() {
         synchronized (pingExecutor) {
             if (pingFuture != null) {
-                log.debug("Stopping WebSocket ping");
+                log.debugf("Stopping WebSocket ping");
                 pingFuture.cancel(true);
                 pingFuture = null;
             }
@@ -546,13 +546,13 @@ public class FeedCommProcessor implements WebSocketListener {
         synchronized (pingExecutor) {
             if (!pingExecutor.isShutdown()) {
                 try {
-                    log.debug("Shutting down WebSocket ping executor");
+                    log.debugf("Shutting down WebSocket ping executor");
                     pingExecutor.shutdown();
                     if (!pingExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
                         pingExecutor.shutdownNow();
                     }
                 } catch (Throwable t) {
-                    log.warn(String.format("Cannot shut down WebSocket ping executor. Cause=%s", t.toString()));
+                    log.warnf("Cannot shut down WebSocket ping executor. Cause=%s", t.toString());
                 }
             }
         }

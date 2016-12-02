@@ -88,7 +88,7 @@ public class DeployApplicationCommand
         // find the operation we need to execute - make sure it exists
         Collection<Operation<DMRNodeLocation>> ops = resource.getResourceType().getOperations();
         boolean canDeploy = false;
-        log.trace(String.format("Searching for Deploy operation among operations [%s] for resource [%s].", ops, resource.getID()));
+        log.tracef("Searching for Deploy operation among operations [%s] for resource [%s].", ops, resource.getID());
         for (Operation<DMRNodeLocation> op : ops) {
             if ("Deploy".equals(op.getName().getNameString())) {
                 canDeploy = true;

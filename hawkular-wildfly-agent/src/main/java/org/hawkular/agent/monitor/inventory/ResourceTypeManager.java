@@ -196,7 +196,7 @@ public final class ResourceTypeManager<L> {
                 for (Name parent : rType.getParents()) {
                     ResourceType<L> parentResourceType = allResourceTypes.get(parent);
                     if (parentResourceType == null) {
-                        log.debug(String.format("Resource type [%s] will ignore unknown parent [%s]", rType.getName(), parent));
+                        log.debugf("Resource type [%s] will ignore unknown parent [%s]", rType.getName(), parent);
                     } else {
                         resourceTypesGraph.addEdge(parentResourceType, rType);
                     }

@@ -339,11 +339,11 @@ public class Util {
                 try (Reader reader = new InputStreamReader(new FileInputStream(machineIdFile))) {
                     systemId = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
                 } catch (IOException e) {
-                    log.warn("/etc/machine-id exists and is readable, but exception was raised when reading it", e);
+                    log.warnf(e, "/etc/machine-id exists and is readable, but exception was raised when reading it");
                     systemId = "";
                 }
             } else {
-                log.warn("/etc/machine-id does not exist or is unreadable");
+                log.warnf("/etc/machine-id does not exist or is unreadable");
                 // for the future, we might want to check additional places and try different things
                 systemId = "";
             }

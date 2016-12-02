@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -245,7 +245,7 @@ public class JBossLoggingReporter extends ScheduledReporter {
 
         @Override
         public void log(String format, Object... arguments) {
-            logger.debug(String.format(format, arguments));
+            logger.debugf(format, arguments);
         }
 
         @Override
@@ -261,7 +261,7 @@ public class JBossLoggingReporter extends ScheduledReporter {
 
         @Override
         public void log(String format, Object... arguments) {
-            logger.trace(String.format(format, arguments));
+            logger.tracef(format, arguments);
         }
 
         @Override

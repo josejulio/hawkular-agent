@@ -162,8 +162,8 @@ public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D ex
         ScheduledCollectionsQueue<L, T> queue = createOrGetScheduledCollectionsQueue(endpointService);
         queue.schedule(schedules);
 
-        LOG.debug(String.format("Scheduler [%s]: [%d] measurements for [%d] resources have been scheduled for endpoint [%s]",
-                this.name, schedules.size(), resources.size(), endpointService));
+        LOG.debugf("Scheduler [%s]: [%d] measurements for [%d] resources have been scheduled for endpoint [%s]",
+                this.name, schedules.size(), resources.size(), endpointService);
     }
 
     /**
@@ -180,9 +180,8 @@ public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D ex
             queue.unschedule(resources);
         }
 
-        LOG.debug(String.format(
-                "Scheduler [%s]: all measurements for [%d] resources have been unscheduled for endpoint [%s]",
-                this.name, resources.size(), endpointService));
+        LOG.debugf("Scheduler [%s]: all measurements for [%d] resources have been unscheduled for endpoint [%s]",
+                this.name, resources.size(), endpointService);
     }
 
     /**
@@ -238,12 +237,12 @@ public abstract class MeasurementScheduler<L, T extends MeasurementType<L>, D ex
         status.assertRunning(getClass(), "stop()");
         status = ServiceStatus.STOPPING;
 
-        LOG.debug(String.format("Stopping scheduler [%s]", this.name));
+        LOG.debugf("Stopping scheduler [%s]", this.name);
 
         try {
             executorService.shutdownNow();
             executorService.awaitTermination(5, TimeUnit.SECONDS);
-            LOG.debug(String.format("Scheduler [%s] stopped", this.name));
+            LOG.debugf("Scheduler [%s] stopped", this.name);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt(); // Preserve interrupt status
         } finally {

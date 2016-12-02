@@ -262,8 +262,8 @@ public class StatisticsControlCommand
                     .assertSuccess()
                     .getResultNode();
 
-            log.debug(String.format("Getting current statistics flag for address [%s][%s]. Type=[%s]:%s", addr, attribName,
-                    result.getType(), result.toJSONString(true)));
+            log.debugf("Getting current statistics flag for address [%s][%s]. Type=[%s]:%s", addr, attribName,
+                    result.getType(), result.toJSONString(true));
 
             // here's the thing - some subsystems with statistics will enable the stats on the subsystem level
             // (like transactions) but others enable stats on each individual resource (like
