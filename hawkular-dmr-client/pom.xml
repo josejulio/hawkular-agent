@@ -71,8 +71,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-naming</artifactId>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-naming</artifactId>
       <scope>provided</scope>
     </dependency>
 

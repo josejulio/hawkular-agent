@@ -203,9 +203,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-naming</artifactId>
-        <version>${version.org.wildfly}</version>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-naming</artifactId>
+        <version>7.5.2.Final-redhat-2</version>
       </dependency>
 
       <dependency>

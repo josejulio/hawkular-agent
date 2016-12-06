@@ -73,6 +73,7 @@ import org.hawkular.agent.monitor.storage.InventoryStorageProxy;
 import org.hawkular.agent.monitor.storage.MetricStorageProxy;
 import org.hawkular.agent.monitor.storage.StorageAdapter;
 import org.hawkular.agent.monitor.util.Util;
+import org.hawkular.agent.monitor.util.WildflyCompabilityUtils;
 import org.hawkular.inventory.api.model.Feed;
 import org.jboss.as.controller.ControlledProcessState;
 import org.jboss.as.controller.ControlledProcessStateService;
@@ -83,7 +84,6 @@ import org.jboss.as.domain.management.SecurityRealm;
 import org.jboss.as.domain.management.security.SSLContextService;
 import org.jboss.as.host.controller.DomainModelControllerService;
 import org.jboss.as.host.controller.HostControllerEnvironment;
-import org.jboss.as.naming.ImmediateManagedReferenceFactory;
 import org.jboss.as.naming.ManagedReferenceFactory;
 import org.jboss.as.naming.ServiceBasedNamingStore;
 import org.jboss.as.naming.deployment.ContextNames;
@@ -94,6 +94,7 @@ import org.jboss.as.server.ServerEnvironment;
 import org.jboss.as.server.ServerEnvironmentService;
 import org.jboss.as.server.Services;
 import org.jboss.logging.Logger;
+import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.AbstractServiceListener;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceBuilder;
@@ -400,16 +401,18 @@ public class MonitorService implements Service<MonitorService> {
             Object jndiObject = getHawkularMonitorContext();
             ContextNames.BindInfo bindInfo = ContextNames.bindInfoFor(jndiName);
             BinderService binderService = new BinderService(bindInfo.getBindName());
-            ManagedReferenceFactory valueMRF = new ImmediateManagedReferenceFactory(jndiObject);
+            ManagedReferenceFactory valueMRF = WildflyCompabilityUtils.getImmediateManagedReferenceFactory(jndiObject);
             String jndiObjectClassName = HawkularWildFlyAgentContext.class.getName();
             ServiceName binderServiceName = bindInfo.getBinderServiceName();
+            Injector<ManagedReferenceFactory> objectInjector = WildflyCompabilityUtils.getObjectInjectorFromBinderService(binderService);
+            Injector<ServiceBasedNamingStore> namingStoreInjector = WildflyCompabilityUtils.getNamingStoreInjectorFromBinderService(binderService);
             ServiceBuilder<?> binderBuilder = target
                     .addService(binderServiceName, binderService)
-                    .addInjection(binderService.getManagedObjectInjector(), valueMRF)
+                    .addInjection(objectInjector, valueMRF)
                     .setInitialMode(ServiceController.Mode.ACTIVE)
                     .addDependency(bindInfo.getParentContextServiceName(),
                             ServiceBasedNamingStore.class,
-                            binderService.getNamingStoreInjector())
+                            namingStoreInjector)
                     .addListener(new JndiBindListener(jndiName, jndiObjectClassName));
 
             // our monitor service will depend on the binder service
