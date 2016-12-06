@@ -17,6 +17,7 @@
 package org.hawkular.dmr.api;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -529,7 +530,18 @@ public class OperationBuilder implements SubsystemDatasourceConstants, Subsystem
 
         @SuppressWarnings("unchecked")
         public T resolveExpressions(boolean resolveExpressions) {
-            baseNode.get(ModelDescriptionConstants.RESOLVE_EXPRESSIONS).set(resolveExpressions);
+            try {
+                Field resolveExpressionField = ModelDescriptionConstants.class.getField("RESOLVE_EXPRESSIONS");
+                String resolveExpressionFieldValue = (String) resolveExpressionField.get(null);
+                baseNode.get(resolveExpressionFieldValue).set(resolveExpressions);
+            } catch (NoSuchFieldException e) {
+                if (resolveExpressions) {
+                    log.warnf("Support for resolving expression wasn't found.");
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+
             return (T) this;
         }
 
