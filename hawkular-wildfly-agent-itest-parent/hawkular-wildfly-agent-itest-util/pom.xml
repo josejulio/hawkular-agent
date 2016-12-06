@@ -73,8 +73,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-controller</artifactId>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-controller</artifactId>
     </dependency>
   </dependencies>
 
