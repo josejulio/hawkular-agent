@@ -44,7 +44,14 @@ public class OperationSubsystemStart implements OperationStepHandler {
                 LOGGER.debug("Asked to start the Hawkular Monitor service");
             }
             if (!service.isMonitorServiceStarted()) {
-                service.startMonitorService();
+                Thread newThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        service.startMonitorService();
+                    }
+                }, "Hawkular WildFly Agent Operation Start Thread");
+                newThread.setDaemon(true);
+                newThread.start();
             }
         } catch (ServiceNotFoundException snfe) {
             throw new OperationFailedException("Cannot restart Hawkular Monitor service - it is disabled", snfe);
