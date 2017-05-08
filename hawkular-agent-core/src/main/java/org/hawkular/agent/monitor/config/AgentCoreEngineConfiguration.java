@@ -42,7 +42,8 @@ public class AgentCoreEngineConfiguration {
 
     public enum StorageReportTo {
         HAWKULAR, // stores metrics to a Hawkular system
-        METRICS // stores metrics to just a Hawkular-Metrics standalone system
+        METRICS, // stores metrics to just a Hawkular-Metrics standalone system
+        HOSA // doesn't store metrics or inventory but exposes that data as JSON for HOSA to retrieve and store
     }
 
     public enum DiagnosticsReportTo {

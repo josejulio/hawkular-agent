@@ -76,6 +76,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="HAWKULAR"/>
       <xs:enumeration value="METRICS"/>
+      <xs:enumeration value="HOSA"/>
     </xs:restriction>
   </xs:simpleType>
 

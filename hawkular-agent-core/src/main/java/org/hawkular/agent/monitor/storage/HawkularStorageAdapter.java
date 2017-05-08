@@ -55,7 +55,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
     private AgentCoreEngineConfiguration.StorageAdapterConfiguration config;
     private Diagnostics diagnostics;
     private HttpClientBuilder httpClientBuilder;
-    private AsyncInventoryStorage inventoryStorage;
+    private BaseInventoryStorage inventoryStorage;
     private Map<String, String> agentTenantIdHeader;
 
     public HawkularStorageAdapter() {
@@ -75,7 +75,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
 
         switch (config.getType()) {
             case HAWKULAR:
-                // We are in a full hawkular environment - so we will integrate with inventory.
+                // We are in a full hawkular environment - so we will store inventory directly to it
                 this.inventoryStorage = new AsyncInventoryStorage(
                         feedId,
                         config,
@@ -87,6 +87,15 @@ public class HawkularStorageAdapter implements StorageAdapter {
             case METRICS:
                 // We are only integrating with standalone Hawkular Metrics which does not support inventory.
                 this.inventoryStorage = null;
+                break;
+
+            case HOSA:
+                // Allow HOSA to be our proxy - cache inventory and HOSA will periodically collect and store our cache
+                this.inventoryStorage = new CacheInventoryStorage(
+                        feedId,
+                        config,
+                        autoDiscoveryScanPeriodSeconds,
+                        diagnostics);
                 break;
 
             default:

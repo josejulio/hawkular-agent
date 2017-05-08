@@ -319,6 +319,11 @@ public abstract class AgentCoreEngine {
                 case METRICS:
                     // nothing special needs to be done
                     break;
+
+                case HOSA:
+                    // nothing special needs to be done
+                    break;
+
                 default:
                     throw new IllegalStateException(
                             "Unknown storage adapter type: " + this.configuration.getStorageAdapter().getType());

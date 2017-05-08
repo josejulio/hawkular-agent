@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class StorageAdapter implements Validatable {
 
     public enum Type {
-        HAWKULAR, METRICS
+        HAWKULAR, METRICS, HOSA
     };
 
     @JsonProperty
