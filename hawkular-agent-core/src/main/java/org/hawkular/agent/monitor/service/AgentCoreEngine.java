@@ -321,7 +321,8 @@ public abstract class AgentCoreEngine {
                     break;
 
                 case HOSA:
-                    // nothing special needs to be done
+                    // Expose the cached inventory and metric data over the endpoint for HOSA to retrieve
+                    startHosaEndpoint();
                     break;
 
                 default:
@@ -435,6 +436,8 @@ public abstract class AgentCoreEngine {
             // We must do a few things first before we can shutdown the scheduler.
             // But we also must make sure we shutdown the scheduler so we kill its threads.
             // Otherwise we hang the shutdown of the entire server. So make sure we get to "stopScheduler".
+
+            stopHosaEndpoint();
 
             // disconnect from the feed comm channel
             try {
@@ -645,6 +648,14 @@ public abstract class AgentCoreEngine {
         }
 
         this.schedulerService.start();
+    }
+
+    private void startHosaEndpoint() {
+        // TODO
+    }
+
+    private void stopHosaEndpoint() {
+        // TODO
     }
 
     private void waitForHawkularServer() throws Exception {

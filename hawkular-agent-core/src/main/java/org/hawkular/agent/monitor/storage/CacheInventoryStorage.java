@@ -23,8 +23,6 @@ import java.util.Map;
 import org.hawkular.agent.monitor.api.InventoryStorage;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.StorageAdapterConfiguration;
 import org.hawkular.agent.monitor.diagnostics.Diagnostics;
-import org.hawkular.agent.monitor.log.AgentLoggers;
-import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.util.Util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class CacheInventoryStorage extends BaseInventoryStorage {
 
-    private static final MsgLogger log = AgentLoggers.getLogger(CacheInventoryStorage.class);
+    //private static final MsgLogger log = AgentLoggers.getLogger(CacheInventoryStorage.class);
 
     private class CachedTenantData {
         @JsonProperty("tenant")
@@ -76,10 +74,6 @@ public class CacheInventoryStorage extends BaseInventoryStorage {
     }
 
     public void shutdown() {
-        // DELETEME
-        log.fatal("CACHED INVENTORY START");
-        log.fatal(getCacheAsJsonString());
-        log.fatal("CACHED INVENTORY END");
         synchronized (lock) {
             deletedMetrics.clear();
             cachedMetrics.clear();
