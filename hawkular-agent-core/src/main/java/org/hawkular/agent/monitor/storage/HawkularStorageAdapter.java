@@ -56,6 +56,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
     private Diagnostics diagnostics;
     private HttpClientBuilder httpClientBuilder;
     private BaseInventoryStorage inventoryStorage;
+    private BaseMetricStorage metricStorage;
     private Map<String, String> agentTenantIdHeader;
 
     public HawkularStorageAdapter() {
@@ -75,6 +76,8 @@ public class HawkularStorageAdapter implements StorageAdapter {
 
         switch (config.getType()) {
             case HAWKULAR:
+                this.metricStorage = new PersistenceMetricStorage(this, diagnostics, httpClientBuilder);
+
                 // We are in a full hawkular environment - so we will store inventory directly to it
                 this.inventoryStorage = new AsyncInventoryStorage(
                         feedId,
@@ -85,12 +88,15 @@ public class HawkularStorageAdapter implements StorageAdapter {
                 break;
 
             case METRICS:
+                this.metricStorage = new PersistenceMetricStorage(this, diagnostics, httpClientBuilder);
+
                 // We are only integrating with standalone Hawkular Metrics which does not support inventory.
                 this.inventoryStorage = null;
                 break;
 
             case HOSA:
                 // Allow HOSA to be our proxy - cache inventory and HOSA will periodically collect and store our cache
+                this.metricStorage = new CacheMetricStorage(this);
                 this.inventoryStorage = new CacheInventoryStorage(
                         feedId,
                         config,
@@ -110,17 +116,17 @@ public class HawkularStorageAdapter implements StorageAdapter {
 
     @Override
     public MetricDataPayloadBuilder createMetricDataPayloadBuilder() {
-        return new MetricDataPayloadBuilderImpl();
+        return metricStorage.createMetricDataPayloadBuilder();
     }
 
     @Override
     public AvailDataPayloadBuilder createAvailDataPayloadBuilder() {
-        return new AvailDataPayloadBuilderImpl();
+        return metricStorage.createAvailDataPayloadBuilder();
     }
 
     @Override
     public MetricTagPayloadBuilder createMetricTagPayloadBuilder() {
-        return new MetricTagPayloadBuilderImpl();
+        return metricStorage.createMetricTagPayloadBuilder();
     }
 
     @Override
@@ -158,74 +164,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
 
     @Override
     public void store(MetricDataPayloadBuilder payloadBuilder, long waitMillis) {
-        String jsonPayload = "?";
-
-        try {
-            // Determine what tenant header to use.
-            // If no tenant override is specified in the payload, use the agent's tenant ID.
-            Map<String, String> tenantIdHeader;
-            String metricTenantId = payloadBuilder.getTenantId();
-            if (metricTenantId == null) {
-                tenantIdHeader = agentTenantIdHeader;
-            } else {
-                tenantIdHeader = getTenantHeader(metricTenantId);
-            }
-
-            // get the payload in JSON format
-            jsonPayload = payloadBuilder.toPayload().toString();
-
-            // build the REST URL...
-            StringBuilder url = Util.getContextUrlString(config.getUrl(), config.getMetricsContext());
-            url.append("metrics/data");
-
-            // now send the REST request
-            Request request = this.httpClientBuilder.buildJsonPostRequest(url.toString(), tenantIdHeader, jsonPayload);
-
-            final CountDownLatch latch = (waitMillis <= 0) ? null : new CountDownLatch(1);
-            final String jsonPayloadFinal = jsonPayload;
-            this.httpClientBuilder.getHttpClient().newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    try {
-                        log.errorFailedToStoreMetricData(e, jsonPayloadFinal);
-                        diagnostics.getStorageErrorRate().mark(1);
-                    } finally {
-                        if (latch != null) {
-                            latch.countDown();
-                        }
-                    }
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        // HTTP status of 200 means success; anything else is an error
-                        if (response.code() != 200) {
-                            IOException e = new IOException("status-code=[" + response.code() + "], reason=["
-                                    + response.message() + "], url=[" + request.url().toString() + "]");
-                            log.errorFailedToStoreMetricData(e, jsonPayloadFinal);
-                            diagnostics.getStorageErrorRate().mark(1);
-                        } else {
-                            // looks like everything stored successfully
-                            diagnostics.getMetricRate().mark(payloadBuilder.getNumberDataPoints());
-                        }
-                    } finally {
-                        if (latch != null) {
-                            latch.countDown();
-                        }
-                        response.body().close();
-                    }
-                }
-            });
-
-            if (latch != null) {
-                latch.await(waitMillis, TimeUnit.MILLISECONDS);
-            }
-
-        } catch (Throwable t) {
-            log.errorFailedToStoreMetricData(t, jsonPayload);
-            diagnostics.getStorageErrorRate().mark(1);
-        }
+        metricStorage.store(payloadBuilder, waitMillis);
     }
 
     @Override
@@ -256,149 +195,12 @@ public class HawkularStorageAdapter implements StorageAdapter {
 
     @Override
     public void store(AvailDataPayloadBuilder payloadBuilder, long waitMillis) {
-        String jsonPayload = "?";
-
-        try {
-            // Determine what tenant header to use.
-            // If no tenant override is specified in the payload, use the agent's tenant ID.
-            Map<String, String> tenantIdHeader;
-            String metricTenantId = payloadBuilder.getTenantId();
-            if (metricTenantId == null) {
-                tenantIdHeader = agentTenantIdHeader;
-            } else {
-                tenantIdHeader = getTenantHeader(metricTenantId);
-            }
-
-            // get the payload in JSON format
-            jsonPayload = payloadBuilder.toPayload().toString();
-
-            // build the REST URL...
-            StringBuilder url = Util.getContextUrlString(config.getUrl(), config.getMetricsContext());
-            url.append("availability/data");
-
-            // now send the REST request
-            Request request = this.httpClientBuilder.buildJsonPostRequest(url.toString(), tenantIdHeader, jsonPayload);
-
-            final CountDownLatch latch = (waitMillis <= 0) ? null : new CountDownLatch(1);
-            final String jsonPayloadFinal = jsonPayload;
-            this.httpClientBuilder.getHttpClient().newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    try {
-                        log.errorFailedToStoreAvailData(e, jsonPayloadFinal);
-                        diagnostics.getStorageErrorRate().mark(1);
-                    } finally {
-                        if (latch != null) {
-                            latch.countDown();
-                        }
-                    }
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        // HTTP status of 200 means success; anything else is an error
-                        if (response.code() != 200) {
-                            IOException e = new IOException("status-code=[" + response.code() + "], reason=["
-                                    + response.message() + "], url=[" + request.url().toString() + "]");
-                            log.errorFailedToStoreAvailData(e, jsonPayloadFinal);
-                            diagnostics.getStorageErrorRate().mark(1);
-                        } else {
-                            // looks like everything stored successfully
-                            diagnostics.getAvailRate().mark(payloadBuilder.getNumberDataPoints());
-                        }
-                    } finally {
-                        if (latch != null) {
-                            latch.countDown();
-                        }
-                        response.body().close();
-                    }
-                }
-            });
-
-            if (latch != null) {
-                latch.await(waitMillis, TimeUnit.MILLISECONDS);
-            }
-
-        } catch (Throwable t) {
-            log.errorFailedToStoreAvailData(t, jsonPayload);
-            diagnostics.getStorageErrorRate().mark(1);
-        }
+        metricStorage.store(payloadBuilder, waitMillis);
     }
 
     @Override
     public void store(MetricTagPayloadBuilder payloadBuilder, long waitMillis) {
-        Map<String, String> jsonPayloads = null;
-
-        try {
-            // Determine what tenant header to use.
-            // If no tenant override is specified in the payload, use the agent's tenant ID.
-            Map<String, String> tenantIdHeader;
-            String metricTenantId = payloadBuilder.getTenantId();
-            if (metricTenantId == null) {
-                tenantIdHeader = agentTenantIdHeader;
-            } else {
-                tenantIdHeader = getTenantHeader(metricTenantId);
-            }
-
-            // get the payload(s)
-            jsonPayloads = payloadBuilder.toPayload();
-
-            // build the REST URL...
-            String url = Util.getContextUrlString(config.getUrl(), config.getMetricsContext()).toString();
-
-            // The way the metrics REST API works is you can only add tags for one metric at a time
-            // so loop through each metric ID and send one REST request for each one.
-            for (Map.Entry<String, String> jsonPayload : jsonPayloads.entrySet()) {
-                String relativePath = jsonPayload.getKey(); // this identifies the metric (e.g. "gauges/<id>")
-                String tagsJson = jsonPayload.getValue();
-                String currentUrl = url + relativePath + "/tags";
-
-                // now send the REST request
-                Request request = this.httpClientBuilder.buildJsonPutRequest(currentUrl, tenantIdHeader, tagsJson);
-                final CountDownLatch latch = (waitMillis <= 0) ? null : new CountDownLatch(1);
-
-                this.httpClientBuilder.getHttpClient().newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        try {
-                            log.errorFailedToStoreMetricTags(e, tagsJson);
-                            diagnostics.getStorageErrorRate().mark(1);
-                        } finally {
-                            if (latch != null) {
-                                latch.countDown();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        try {
-                            // HTTP status of 200 means success; anything else is an error
-                            if (response.code() != 200) {
-                                IOException e = new IOException("status-code=[" + response.code() + "], reason=["
-                                        + response.message() + "], url=[" + request.url().toString() + "]");
-                                log.errorFailedToStoreMetricTags(e, tagsJson);
-                                diagnostics.getStorageErrorRate().mark(1);
-                            }
-                        } finally {
-                            if (latch != null) {
-                                latch.countDown();
-                            }
-                            response.body().close();
-                        }
-                    }
-                });
-
-                if (latch != null) {
-                    latch.await(waitMillis, TimeUnit.MILLISECONDS);
-                }
-            }
-
-        } catch (Throwable t) {
-            log.errorFailedToStoreMetricTags(t, (jsonPayloads == null) ? "?" : jsonPayloads.toString());
-            diagnostics.getStorageErrorRate().mark(1);
-        }
+        metricStorage.store(payloadBuilder, waitMillis);
     }
 
     @Override
@@ -453,10 +255,12 @@ public class HawkularStorageAdapter implements StorageAdapter {
     /**
      * Builds the header necessary for the tenant ID.
      *
+     * Package-scoped so metric storage objects can access this.
+     *
      * @param tenantId the tenant ID string - this is the value of the returned map
      * @return the tenant header consisting of the header key and the value
      */
-    private Map<String, String> getTenantHeader(String tenantId) {
+    Map<String, String> getTenantHeader(String tenantId) {
         return Collections.singletonMap("Hawkular-Tenant", tenantId);
     }
 
