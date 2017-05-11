@@ -77,11 +77,6 @@ public class CacheMetricStorage extends BaseMetricStorage {
     }
 
     public void shutdown() {
-        // DELETEME
-        log.fatal("METRICS START");
-        log.fatal(getCacheAsJsonString());
-        log.fatal("METRICS END");
-
         synchronized (lock) {
             cachedMetricData.clear();
             cachedAvailData.clear();

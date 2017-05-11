@@ -83,11 +83,6 @@ public class CacheInventoryStorage extends BaseInventoryStorage {
     }
 
     public void shutdown() {
-        // DELETEME
-        log.fatal("METRICS START");
-        log.fatal(getCacheAsJsonString());
-        log.fatal("METRICS END");
-
         synchronized (lock) {
             deletedMetrics.clear();
             cachedMetrics.clear();
