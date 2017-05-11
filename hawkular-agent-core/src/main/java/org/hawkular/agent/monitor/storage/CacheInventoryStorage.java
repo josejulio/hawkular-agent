@@ -23,6 +23,8 @@ import java.util.Map;
 import org.hawkular.agent.monitor.api.InventoryStorage;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration.StorageAdapterConfiguration;
 import org.hawkular.agent.monitor.diagnostics.Diagnostics;
+import org.hawkular.agent.monitor.log.AgentLoggers;
+import org.hawkular.agent.monitor.log.MsgLogger;
 import org.hawkular.agent.monitor.util.Util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class CacheInventoryStorage extends BaseInventoryStorage {
 
-    //private static final MsgLogger log = AgentLoggers.getLogger(CacheInventoryStorage.class);
+    private static final MsgLogger log = AgentLoggers.getLogger(CacheInventoryStorage.class);
 
     private class CachedTenantData {
         @JsonProperty("tenant")
@@ -66,14 +68,26 @@ public class CacheInventoryStorage extends BaseInventoryStorage {
     public String getCacheAsJsonString() {
         synchronized (lock) {
             HashMap<String, Object> allData = new HashMap<>(3);
-            allData.put("deleted-metrics", this.deletedMetrics);
-            allData.put("metrics", this.cachedMetrics);
-            allData.put("metric-definitions", this.cachedMetricDefinitions);
-            return Util.toJson(allData);
+            allData.put("deleted-metrics", deletedMetrics);
+            allData.put("metrics", cachedMetrics);
+            allData.put("metric-definitions", cachedMetricDefinitions);
+
+            try {
+                return Util.toJson(allData);
+            } finally {
+                deletedMetrics.clear();
+                cachedMetrics.clear();
+                cachedMetricDefinitions.clear();
+            }
         }
     }
 
     public void shutdown() {
+        // DELETEME
+        log.fatal("METRICS START");
+        log.fatal(getCacheAsJsonString());
+        log.fatal("METRICS END");
+
         synchronized (lock) {
             deletedMetrics.clear();
             cachedMetrics.clear();
