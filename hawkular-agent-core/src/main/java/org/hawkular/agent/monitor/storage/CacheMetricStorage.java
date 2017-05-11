@@ -138,7 +138,7 @@ public class CacheMetricStorage extends BaseMetricStorage {
         // get the payload(s)
         Map<String, String> jsonPayloads = payloadBuilder.toPayload();
 
-        // for each metric ID, cache their data - note jsonPayload key identifies the metric (e.g. "gauges/<id>") 
+        // for each metric ID, cache their data - note jsonPayload key identifies the metric (e.g. "gauges/<id>")
         synchronized (lock) {
             for (Map.Entry<String, String> jsonPayload : jsonPayloads.entrySet()) {
                 cachedTagData.put(jsonPayload.getKey(), new CachedTenantData(metricTenantId, jsonPayload.getValue()));
