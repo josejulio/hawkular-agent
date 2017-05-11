@@ -94,7 +94,9 @@ public class CacheMetricStorage extends BaseMetricStorage {
         String jsonPayload = payloadBuilder.toPayload().toString();
 
         // cache it
-        cachedMetricData.add(new CachedTenantData(metricTenantId, jsonPayload));
+        synchronized (lock) {
+            cachedMetricData.add(new CachedTenantData(metricTenantId, jsonPayload));
+        }
     }
 
     @Override
@@ -110,7 +112,9 @@ public class CacheMetricStorage extends BaseMetricStorage {
         String jsonPayload = payloadBuilder.toPayload().toString();
 
         // cache it
-        cachedAvailData.add(new CachedTenantData(metricTenantId, jsonPayload));
+        synchronized (lock) {
+            cachedAvailData.add(new CachedTenantData(metricTenantId, jsonPayload));
+        }
     }
 
     @Override
@@ -125,12 +129,11 @@ public class CacheMetricStorage extends BaseMetricStorage {
         // get the payload(s)
         Map<String, String> jsonPayloads = payloadBuilder.toPayload();
 
-        // loop through each metric ID
-        for (Map.Entry<String, String> jsonPayload : jsonPayloads.entrySet()) {
-            String metricTypeAndId = jsonPayload.getKey(); // this identifies the metric (e.g. "gauges/<id>")
-
-            // cache it
-            cachedTagData.put(metricTypeAndId, new CachedTenantData(metricTenantId, jsonPayload.getValue()));
+        // for each metric ID, cache their data - note jsonPayload key identifies the metric (e.g. "gauges/<id>") 
+        synchronized (lock) {
+            for (Map.Entry<String, String> jsonPayload : jsonPayloads.entrySet()) {
+                cachedTagData.put(jsonPayload.getKey(), new CachedTenantData(metricTenantId, jsonPayload.getValue()));
+            }
         }
     }
 }
