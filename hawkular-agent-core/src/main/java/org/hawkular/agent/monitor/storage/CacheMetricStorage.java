@@ -18,6 +18,8 @@ package org.hawkular.agent.monitor.storage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.hawkular.agent.monitor.api.AvailDataPayloadBuilder;
@@ -45,31 +47,43 @@ public class CacheMetricStorage extends BaseMetricStorage {
         }
     }
 
-    private final ArrayList<CachedTenantData> cachedMetricData;
-    private final ArrayList<CachedTenantData> cachedAvailData;
+    private final LinkedList<CachedTenantData> cachedMetricData;
+    private final LinkedList<CachedTenantData> cachedAvailData;
     private final HashMap<String, CachedTenantData> cachedTagData; // keyed on metric ID
     private final Object lock = new Object();
 
     public CacheMetricStorage(HawkularStorageAdapter storageAdapter) {
         super(storageAdapter);
-        this.cachedMetricData = new ArrayList<>();
-        this.cachedAvailData = new ArrayList<>();
+        this.cachedMetricData = new LinkedList<>();
+        this.cachedAvailData = new LinkedList<>();
         this.cachedTagData = new HashMap<>();
     }
 
     public String getCacheAsJsonString() {
+        List<CachedTenantData> metricsCopy;
+        List<CachedTenantData> availsCopy;
+        Map<String, CachedTenantData> tagsCopy;
+
         synchronized (lock) {
-            HashMap<String, Object> allData = new HashMap<>(3);
-            allData.put("metrics", new ArrayList<>(cachedMetricData));
-            allData.put("avails", new ArrayList<>(cachedAvailData));
-            allData.put("tags", new HashMap<>(cachedTagData));
-
-            cachedMetricData.clear();
-            cachedAvailData.clear();
+            // transfer the caches data to temporary objects, clearing the cache objects themselves as we go
+            metricsCopy = new ArrayList<>(cachedMetricData.size());
+            while (!cachedMetricData.isEmpty()) {
+                metricsCopy.add(cachedMetricData.remove());
+            }
+            availsCopy = new ArrayList<>(cachedAvailData.size());
+            while (!cachedAvailData.isEmpty()) {
+                availsCopy.add(cachedAvailData.remove());
+            }
+            tagsCopy = new HashMap<>(cachedTagData);
             cachedTagData.clear();
-
-            return Util.toJson(allData);
         }
+
+        // build the JSON data
+        HashMap<String, Object> allData = new HashMap<>(3);
+        allData.put("metrics", metricsCopy);
+        allData.put("avails", availsCopy);
+        allData.put("tags", tagsCopy);
+        return Util.toJson(allData);
     }
 
     public void shutdown() {
