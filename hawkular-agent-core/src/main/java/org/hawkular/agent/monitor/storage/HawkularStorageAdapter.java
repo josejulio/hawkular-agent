@@ -250,6 +250,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
         if (inventoryStorage != null) {
             inventoryStorage.shutdown();
         }
+        metricStorage.shutdown();
     }
 
     /**

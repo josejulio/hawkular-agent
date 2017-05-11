@@ -56,4 +56,8 @@ public abstract class BaseMetricStorage implements MetricStorage, AvailStorage {
     protected Map<String, String> getAgentTenantIdHeader() {
         return agentTenantIdHeader;
     }
+
+    protected void shutdown() {
+        // no op
+    }
 }
