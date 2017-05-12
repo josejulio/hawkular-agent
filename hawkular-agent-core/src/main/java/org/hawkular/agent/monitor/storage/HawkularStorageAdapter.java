@@ -42,6 +42,8 @@ import org.hawkular.agent.monitor.inventory.MetricType;
 import org.hawkular.agent.monitor.inventory.Resource;
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
+import org.hawkular.agent.monitor.server.AgentRestServer;
+import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
 import org.hawkular.agent.monitor.util.Util;
 
 import okhttp3.Call;
@@ -58,6 +60,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
     private BaseInventoryStorage inventoryStorage;
     private BaseMetricStorage metricStorage;
     private Map<String, String> agentTenantIdHeader;
+    private AgentRestServer agentRestServer;
 
     public HawkularStorageAdapter() {
     }
@@ -102,6 +105,11 @@ public class HawkularStorageAdapter implements StorageAdapter {
                         config,
                         autoDiscoveryScanPeriodSeconds,
                         diagnostics);
+                agentRestServer = new AgentRestServer(new BaseRestServerGenerator(
+                        new BaseRestServerGenerator.Configuration.Builder()
+                        .address("0.0.0.0")
+                         .port(8090).build()));
+                agentRestServer.startServer();
                 break;
 
             default:
@@ -251,6 +259,9 @@ public class HawkularStorageAdapter implements StorageAdapter {
             inventoryStorage.shutdown();
         }
         metricStorage.shutdown();
+        if (agentRestServer != null) {
+            agentRestServer.shutdown();
+        }
     }
 
     /**
