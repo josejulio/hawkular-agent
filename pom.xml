@@ -70,6 +70,7 @@
     <version.commons.io>2.4</version.commons.io>
     <version.com.github.dblock>2.6.2</version.com.github.dblock>
     <version.com.samskivert.jmustache>1.11</version.com.samskivert.jmustache>
+    <version.com.strategicgains>0.11.3</version.com.strategicgains>
     <version.io.dropwizard.metrics>3.1.2</version.io.dropwizard.metrics>
     <version.org.hamcrest>1.3</version.org.hamcrest>
     <version.org.hawkular.commons>0.9.6.Final</version.org.hawkular.commons>
@@ -99,6 +100,12 @@
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
         <version>${version.com.fasterxml.jackson.core}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.strategicgains</groupId>
+        <artifactId>RestExpress</artifactId>
+        <version>${version.com.strategicgains}</version>
       </dependency>
 
       <dependency>
