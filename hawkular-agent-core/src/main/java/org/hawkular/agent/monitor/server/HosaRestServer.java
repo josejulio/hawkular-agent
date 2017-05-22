@@ -16,33 +16,16 @@
  */
 package org.hawkular.agent.monitor.server;
 
-import org.hawkular.agent.monitor.server.controller.AgentRestController;
+import org.hawkular.agent.monitor.server.controller.EchoController;
 import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
 
-import org.restexpress.RestExpress;
+/**
+ * Created by josejulio on 5/22/17.
+ */
+public class HosaRestServer extends AgentRestServer {
 
-public class AgentRestServer {
-
-    protected RestExpress server = null;
-
-    public AgentRestServer(BaseRestServerGenerator restServerGenerator) {
-        this.server = restServerGenerator.getRestServer();
-    }
-
-    public AgentRestServer addController(AgentRestController controller) {
-        controller.configureRouteBuilder(this.server.uri(controller.endpoint(), controller));
-        return this;
-    }
-
-    public void startServer() {
-        server.bind();
-    }
-
-    public void shutdown() {
-        this.shutdown(false);
-    }
-
-    public void shutdown(boolean forceStop) {
-        server.shutdown(!forceStop);
+    public HosaRestServer(BaseRestServerGenerator restServerGenerator) {
+        super(restServerGenerator);
+        addController(new EchoController());
     }
 }
