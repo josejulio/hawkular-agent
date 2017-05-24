@@ -16,6 +16,7 @@
  */
 package org.hawkular.agent.monitor.server.controller;
 
+import org.restexpress.Flags;
 import org.restexpress.Request;
 import org.restexpress.Response;
 import org.restexpress.route.RouteBuilder;
@@ -23,17 +24,28 @@ import org.restexpress.route.RouteBuilder;
 import io.netty.handler.codec.http.HttpMethod;
 
 
+/**
+ * Basic controller that requires to be public (no auth needed)
+ * ToDo: Might be a good idea to implement some annotations to make it easy to configure this.
+ */
 // @controller(endpoint="echo")
+
 public class EchoController extends AgentRestController {
 
     public EchoController() {
         super("echo");
     }
 
+    public EchoController(String endpoint) {
+        super(endpoint);
+    }
+
     @Override
     public void configureRouteBuilder(RouteBuilder builder) {
         // It would be easier with annotations
-        builder.action("echo", HttpMethod.GET).noSerialization();
+        builder.action("echo", HttpMethod.GET)
+                .flag(Flags.Auth.PUBLIC_ROUTE)
+                .noSerialization();
     }
 
     //  @action(method=HttpMethod.GET)

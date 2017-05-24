@@ -14,20 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.agent.monitor.server;
+package org.hawkular.agent.monitor.server.controller;
 
-import org.hawkular.agent.monitor.server.controller.EchoController;
-import org.hawkular.agent.monitor.server.controller.SecuredEchoController;
-import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
+import org.restexpress.route.RouteBuilder;
+
+import io.netty.handler.codec.http.HttpMethod;
 
 /**
- * HOSA rest server with echo and secured echo controller.
+ * Basic controller that isn't required to be public.
  */
-public class HosaRestServer extends AgentRestServer {
+public class SecuredEchoController extends EchoController {
 
-    public HosaRestServer(BaseRestServerGenerator restServerGenerator) {
-        super(restServerGenerator);
-        addController(new EchoController());
-        addController(new SecuredEchoController());
+    public SecuredEchoController() {
+        super("secure-echo");
+    }
+
+    @Override
+    public void configureRouteBuilder(RouteBuilder builder) {
+        // It would be easier with annotations
+        builder.action("echo", HttpMethod.GET).noSerialization();
     }
 }

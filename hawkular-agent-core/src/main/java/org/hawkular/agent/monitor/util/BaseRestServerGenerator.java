@@ -19,10 +19,21 @@ package org.hawkular.agent.monitor.util;
 import java.security.KeyStore;
 
 import javax.net.ssl.SSLContext;
+import javax.xml.bind.DatatypeConverter;
 
 import org.hawkular.agent.monitor.log.AgentLoggers;
 import org.hawkular.agent.monitor.log.MsgLogger;
+
+import org.restexpress.ContentType;
+import org.restexpress.Flags;
+import org.restexpress.Request;
 import org.restexpress.RestExpress;
+import org.restexpress.exception.UnauthorizedException;
+import org.restexpress.pipeline.Preprocessor;
+import org.restexpress.route.Route;
+
+import io.netty.handler.codec.http.HttpHeaders;
+
 
 /**
  * Can be used to generate RestServers including those that require SSL.
@@ -177,6 +188,12 @@ public class BaseRestServerGenerator {
             }
         }
 
+        if (this.configuration.getUsername() != null && !this.configuration.getUsername().isEmpty()) {
+            restServer.addPreprocessor(new HttpBasicAuthenticationRestServerPreprocessor(
+                    this.configuration.getUsername(),
+                    this.configuration.getPassword()));
+        }
+
         this.restServer = restServer;
 
     }
@@ -187,5 +204,46 @@ public class BaseRestServerGenerator {
 
     public Configuration getConfiguration() {
         return this.configuration;
+    }
+
+    // Based on https://github.com/RestExpress/RestExpress/blob/master/core/src/main/java/org/restexpress/preprocessor/HttpBasicAuthenticationPreprocessor.java
+    private static class HttpBasicAuthenticationRestServerPreprocessor implements Preprocessor {
+
+        private String username;
+        private String password;
+
+        public HttpBasicAuthenticationRestServerPreprocessor(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+
+        @Override
+        public void process(Request request) {
+            Route route = request.getResolvedRoute();
+            if(route == null || !route.isFlagged(Flags.Auth.PUBLIC_ROUTE) && !route.isFlagged(Flags.Auth.NO_AUTHENTICATION)) {
+                String authorization = request.getHeader("Authorization");
+                if(authorization == null || !authorization.startsWith("Basic ")) {
+                    this.throwUnauthorizedException();
+                }
+
+                String[] pieces = authorization.split(" ");
+                byte[] bytes = DatatypeConverter.parseBase64Binary(pieces[1]);
+                String credentials = new String(bytes, ContentType.CHARSET);
+                String[] parts = credentials.split(":");
+                if(parts.length < 2) {
+                    this.throwUnauthorizedException();
+                }
+
+                if (!username.equals(parts[0]) || !password.equals(parts[1])) {
+                    throwUnauthorizedException();
+                }
+            }
+        }
+
+        private void throwUnauthorizedException() {
+            UnauthorizedException e = new UnauthorizedException("Authentication required");
+            e.setHeader(HttpHeaders.Names.WWW_AUTHENTICATE, "Basic realm=\"Hawkular-Agent\"");
+            throw e;
+        }
     }
 }

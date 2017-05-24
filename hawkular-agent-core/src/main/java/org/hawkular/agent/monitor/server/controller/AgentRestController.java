@@ -18,6 +18,9 @@ package org.hawkular.agent.monitor.server.controller;
 
 import org.restexpress.route.RouteBuilder;
 
+/**
+ * Base controller object, it provides the way to further configure the added route.
+ */
 public class AgentRestController {
 
     private String endpoint;
