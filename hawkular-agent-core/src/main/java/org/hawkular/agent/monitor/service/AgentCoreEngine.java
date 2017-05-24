@@ -291,12 +291,12 @@ public abstract class AgentCoreEngine {
             // We need the tenantIds to register our feed (in Hawkular mode) and to schedule pings
             Set<String> tenantIds = getTenantIds();
 
-            // Before we go on, we must make sure the Hawkular Server is up and ready
-            waitForHawkularServer();
-
             // perform some things that are dependent upon what mode the agent is in
             switch (this.configuration.getStorageAdapter().getType()) {
                 case HAWKULAR:
+                    // Before we go on, we must make sure the Hawkular Server is up and ready
+                    waitForHawkularServer();
+
                     // if we are participating in a full Hawkular environment, we need to do some additional things:
                     // try to connect to the server via command-gateway channel; keep going on error
                     try {
@@ -317,7 +317,9 @@ public abstract class AgentCoreEngine {
                     break;
 
                 case METRICS:
-                    // nothing special needs to be done
+                    // Before we go on, we must make sure the Hawkular Server is up and ready
+                    waitForHawkularServer();
+
                     break;
 
                 case HOSA:
