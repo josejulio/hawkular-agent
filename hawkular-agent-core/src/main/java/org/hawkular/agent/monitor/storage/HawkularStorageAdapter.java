@@ -106,12 +106,19 @@ public class HawkularStorageAdapter implements StorageAdapter {
                         config,
                         autoDiscoveryScanPeriodSeconds,
                         diagnostics);
-                agentRestServer = new HosaRestServer(new BaseRestServerGenerator(
+
+                // build the HOSA rest server
+                BaseRestServerGenerator restServerGenerator = new BaseRestServerGenerator(
                         new BaseRestServerGenerator.Configuration.Builder()
                                 .username("jdoe")
                                 .password("password")
                                 .address("0.0.0.0")
-                                .port(8090).build()));
+                                .port(8090)
+                                .build());
+                agentRestServer = new HosaRestServer(
+                        restServerGenerator,
+                        (CacheMetricStorage) this.metricStorage,
+                        (CacheInventoryStorage) this.inventoryStorage);
                 agentRestServer.startServer();
                 break;
 

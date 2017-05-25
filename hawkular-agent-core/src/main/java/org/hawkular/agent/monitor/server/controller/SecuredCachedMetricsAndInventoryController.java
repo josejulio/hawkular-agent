@@ -14,28 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.agent.monitor.server;
+package org.hawkular.agent.monitor.server.controller;
 
-import org.hawkular.agent.monitor.server.controller.CachedMetricsAndInventoryController;
-import org.hawkular.agent.monitor.server.controller.SecuredCachedMetricsAndInventoryController;
 import org.hawkular.agent.monitor.storage.CacheInventoryStorage;
 import org.hawkular.agent.monitor.storage.CacheMetricStorage;
-import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
+import org.restexpress.route.RouteBuilder;
+
+import io.netty.handler.codec.http.HttpMethod;
 
 /**
- * HOSA rest server with unsecured and secured controllers.
+ * Controller that isn't required to be public.
+ * @see CachedMetricsAndInventoryController
  */
-public class HosaRestServer extends AgentRestServer {
+public class SecuredCachedMetricsAndInventoryController extends CachedMetricsAndInventoryController {
 
-    public HosaRestServer(BaseRestServerGenerator restServerGenerator,
+    public SecuredCachedMetricsAndInventoryController(
             CacheMetricStorage metricStorage,
             CacheInventoryStorage inventoryStorage) {
-        super(restServerGenerator);
+        super("secure-" + ENDPOINT, metricStorage, inventoryStorage);
+    }
 
-        addController(new CachedMetricsAndInventoryController(metricStorage, inventoryStorage));
-        addController(new SecuredCachedMetricsAndInventoryController(metricStorage, inventoryStorage));
-
-        // addController(new EchoController());
-        // addController(new SecuredEchoController());
+    @Override
+    public void configureRouteBuilder(RouteBuilder builder) {
+        builder.action(ENDPOINT, HttpMethod.GET)
+                .noSerialization();
     }
 }
