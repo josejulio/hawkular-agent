@@ -144,6 +144,42 @@ public interface StorageAttributes {
                     .setDefaultValue(new ModelNode(120)) /* e.g. bulk inserts may take long */
                     .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
                     .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_ADDRESS = new SimpleAttributeDefinitionBuilder("hosa-endpoint-address",
+            ModelType.STRING)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_PORT = new SimpleAttributeDefinitionBuilder("hosa-endpoint-port",
+            ModelType.INT)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_USERNAME = new SimpleAttributeDefinitionBuilder("hosa-endpoint-username",
+            ModelType.STRING)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_PASSWORD = new SimpleAttributeDefinitionBuilder("hosa-endpoint-password",
+            ModelType.STRING)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_USE_SSL = new SimpleAttributeDefinitionBuilder("hosa-endpoint-use-ssl",
+            ModelType.BOOLEAN)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
+    SimpleAttributeDefinition HOSA_ENDPOINT_SECURITY_REALM = new SimpleAttributeDefinitionBuilder("hosa-endpoint-security-realm",
+            ModelType.STRING)
+            .setAllowNull(true)
+            .setAllowExpression(true)
+            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .build();
 
     AttributeDefinition[] ATTRIBUTES = {
             TYPE,
@@ -160,7 +196,13 @@ public interface StorageAttributes {
             METRICS_CONTEXT,
             FEEDCOMM_CONTEXT,
             CONNECT_TIMEOUT_SECONDS,
-            READ_TIMEOUT_SECONDS
+            READ_TIMEOUT_SECONDS,
+            HOSA_ENDPOINT_ADDRESS,
+            HOSA_ENDPOINT_PORT,
+            HOSA_ENDPOINT_USERNAME,
+            HOSA_ENDPOINT_PASSWORD,
+            HOSA_ENDPOINT_USE_SSL,
+            HOSA_ENDPOINT_SECURITY_REALM
     };
 
 }

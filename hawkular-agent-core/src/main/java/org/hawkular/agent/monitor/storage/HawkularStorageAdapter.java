@@ -110,10 +110,11 @@ public class HawkularStorageAdapter implements StorageAdapter {
                 // build the HOSA rest server
                 BaseRestServerGenerator restServerGenerator = new BaseRestServerGenerator(
                         new BaseRestServerGenerator.Configuration.Builder()
-                                .username("jdoe")
-                                .password("password")
-                                .address("0.0.0.0")
-                                .port(8090)
+                                .username(config.getHosaEndpointUsername())
+                                .password(config.getHosaEndpointPassword())
+                                .address(config.getHosaEndpointAddress())
+                                .port(config.getHosaEndpointPort())
+                                .useSSL(config.getHosaEndpointUseSSL())
                                 .build());
                 agentRestServer = new HosaRestServer(
                         restServerGenerator,

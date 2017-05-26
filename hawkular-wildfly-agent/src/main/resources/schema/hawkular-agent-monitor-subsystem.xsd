@@ -70,6 +70,12 @@
     <xs:attribute name="feedcomm-context"      type="xs:string"/>
     <xs:attribute name="connect-timeout-secs"  type="xs:int"/>
     <xs:attribute name="read-timeout-secs"     type="xs:int"/>
+    <xs:attribute name="hosa-endpoint-address"         type="xs:string"/>
+    <xs:attribute name="hosa-endpoint-port"            type="xs:int"/>
+    <xs:attribute name="hosa-endpoint-username"        type="xs:string"/>
+    <xs:attribute name="hosa-endpoint-password"        type="xs:string"/>
+    <xs:attribute name="hosa-endpoint-use-ssl"         type="xs:boolean"/>
+    <xs:attribute name="hosa-endpoint-security-realm"  type="xs:string"/>
   </xs:complexType>
 
   <xs:simpleType name="adapterType">

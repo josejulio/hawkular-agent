@@ -124,7 +124,13 @@ public class ConfigConverter {
                 null, // we use security realm exclusively
                 config.getStorageAdapter().getSecurityRealmName(),
                 config.getStorageAdapter().getConnectTimeoutSecs(),
-                config.getStorageAdapter().getReadTimeoutSecs());
+                config.getStorageAdapter().getReadTimeoutSecs(),
+                config.getStorageAdapter().getHosaEndpointAddress(),
+                config.getStorageAdapter().getHosaEndpointPort(),
+                config.getStorageAdapter().getHosaEndpointUsername(),
+                config.getStorageAdapter().getHosaEndpointPassword(),
+                config.getStorageAdapter().getHosaEndpointUseSsl(),
+                config.getStorageAdapter().getHosaEndpointSecurityRealm());
 
         ProtocolConfiguration<DMRNodeLocation> dmrConfiguration = buildDmrConfiguration(config);
         ProtocolConfiguration<JMXNodeLocation> jmxConfiguration = buildJmxConfiguration(config);

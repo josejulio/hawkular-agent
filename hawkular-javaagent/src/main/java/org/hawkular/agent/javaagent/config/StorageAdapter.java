@@ -71,6 +71,24 @@ public class StorageAdapter implements Validatable {
     @JsonProperty("read-timeout-secs")
     private Integer readTimeoutSecs = 120;
 
+    @JsonProperty("hosa-endpoint-address")
+    private StringExpression hosaEndpointAddress = new StringExpression("0.0.0.0");
+
+    @JsonProperty("hosa-endpoint-port")
+    private IntegerExpression hosaEndpointPort = new IntegerExpression(8090);
+
+    @JsonProperty("hosa-endpoint-username")
+    private StringExpression hosaEndpointUsername;
+
+    @JsonProperty("hosa-endpoint-password")
+    private StringExpression hosaEndpointPassword;
+
+    @JsonProperty("hosa-endpoint-use-ssl")
+    private BooleanExpression hosaEndpointUseSsl = new BooleanExpression(false);
+
+    @JsonProperty("hosa-endpoint-security-realm")
+    private String hosaEndpointSecurityRealm;
+
     public StorageAdapter() {
     }
 
@@ -87,6 +105,12 @@ public class StorageAdapter implements Validatable {
         this.hawkularContext = original.hawkularContext;
         this.connectTimeoutSecs = original.connectTimeoutSecs;
         this.readTimeoutSecs = original.readTimeoutSecs;
+        this.hosaEndpointAddress = original.hosaEndpointAddress == null ? null : new StringExpression(original.hosaEndpointAddress);
+        this.hosaEndpointPort = original.hosaEndpointPort == null ? null : new IntegerExpression(original.hosaEndpointPort);
+        this.hosaEndpointUsername = original.hosaEndpointUsername == null ? null : new StringExpression(original.hosaEndpointUsername);
+        this.hosaEndpointPassword = original.hosaEndpointPassword == null ? null : new StringExpression(original.hosaEndpointPassword);
+        this.hosaEndpointUseSsl = original.hosaEndpointUseSsl == null ? null : new BooleanExpression(original.hosaEndpointUseSsl);
+        this.hosaEndpointSecurityRealm = original.hosaEndpointSecurityRealm;
     }
 
     /**
@@ -234,5 +258,73 @@ public class StorageAdapter implements Validatable {
 
     public void setReadTimeoutSecs(Integer readTimeoutSecs) {
         this.readTimeoutSecs = readTimeoutSecs;
+    }
+
+    public String getHosaEndpointAddress() {
+        return hosaEndpointAddress == null ? null : hosaEndpointAddress.get().toString();
+    }
+
+    public void setHosaEndpointAddress(String hosaEndpointAddress) {
+        if (this.hosaEndpointAddress != null) {
+            this.hosaEndpointAddress.set(new StringValue(hosaEndpointAddress));
+        } else {
+            this.hosaEndpointAddress = new StringExpression(new StringValue(hosaEndpointAddress));
+        }
+    }
+
+    public Integer getHosaEndpointPort() {
+        return hosaEndpointPort == null ? null : hosaEndpointPort.get();
+    }
+
+    public void setHosaEndpointPort(Integer hosaEndpointPort) {
+        if (this.hosaEndpointPort != null) {
+            this.hosaEndpointPort.set(hosaEndpointPort);
+        } else {
+            this.hosaEndpointPort = new IntegerExpression(hosaEndpointPort);
+        }
+    }
+
+    public String getHosaEndpointUsername() {
+        return hosaEndpointUsername == null ? null : hosaEndpointUsername.get().toString();
+    }
+
+    public void setHosaEndpointUsername(String hosaEndpointUsername) {
+        if (this.hosaEndpointUsername != null) {
+            this.hosaEndpointUsername.set(new StringValue(hosaEndpointUsername));
+        } else {
+            this.hosaEndpointUsername = new StringExpression(new StringValue(hosaEndpointUsername));
+        }
+    }
+
+    public String getHosaEndpointPassword() {
+        return hosaEndpointPassword == null ? null : hosaEndpointPassword.get().toString();
+    }
+
+    public void setHosaEndpointPassword(String hosaEndpointPassword) {
+        if (this.hosaEndpointPassword != null) {
+            this.hosaEndpointPassword.set(new StringValue(hosaEndpointPassword));
+        } else {
+            this.hosaEndpointPassword = new StringExpression(new StringValue(hosaEndpointPassword));
+        }
+    }
+
+    public Boolean getHosaEndpointUseSsl() {
+        return hosaEndpointUseSsl == null ? null : hosaEndpointUseSsl.get();
+    }
+
+    public void setHosaEndpointUseSsl(Boolean hosaEndpointUseSsl) {
+        if (this.hosaEndpointUseSsl != null) {
+            this.hosaEndpointUseSsl.set(hosaEndpointUseSsl);
+        } else {
+            this.hosaEndpointUseSsl = new BooleanExpression(hosaEndpointUseSsl);
+        }
+    }
+
+    public String getHosaEndpointSecurityRealm() {
+        return hosaEndpointSecurityRealm;
+    }
+
+    public void setHosaEndpointSecurityRealm(String hosaEndpointSecurityRealm) {
+        this.hosaEndpointSecurityRealm = hosaEndpointSecurityRealm;
     }
 }

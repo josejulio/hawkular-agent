@@ -74,6 +74,13 @@ public class AgentCoreEngineConfiguration {
         private final int connectTimeoutSeconds;
         private final int readTimeoutSeconds;
 
+        private final String hosaEndpointAddress;
+        private final Integer hosaEndpointPort;
+        private final String hosaEndpointUsername;
+        private final String hosaEndpointPassword;
+        private final Boolean hosaEndpointUseSSL;
+        private final String hosaEndpointSecurityRealm;
+
         public StorageAdapterConfiguration(
                 StorageReportTo type,
                 String username,
@@ -90,7 +97,13 @@ public class AgentCoreEngineConfiguration {
                 String keystorePassword,
                 String securityRealm,
                 int connectTimeoutSeconds,
-                int readTimeoutSeconds) {
+                int readTimeoutSeconds,
+                String hosaEndpointAddress,
+                Integer hosaEndpointPort,
+                String hosaEndpointUsername,
+                String hosaEndpointPassword,
+                Boolean hosaEndpointUseSSL,
+                String hosaEndpointSecurityRealm) {
             super();
             this.type = type;
             this.username = username;
@@ -108,6 +121,12 @@ public class AgentCoreEngineConfiguration {
             this.securityRealm = securityRealm;
             this.connectTimeoutSeconds = connectTimeoutSeconds;
             this.readTimeoutSeconds = readTimeoutSeconds;
+            this.hosaEndpointAddress = hosaEndpointAddress;
+            this.hosaEndpointPort = hosaEndpointPort;
+            this.hosaEndpointUsername = hosaEndpointUsername;
+            this.hosaEndpointPassword = hosaEndpointPassword;
+            this.hosaEndpointUseSSL = hosaEndpointUseSSL;
+            this.hosaEndpointSecurityRealm = hosaEndpointSecurityRealm;
         }
 
         public StorageReportTo getType() {
@@ -182,6 +201,29 @@ public class AgentCoreEngineConfiguration {
             return readTimeoutSeconds;
         }
 
+        public String getHosaEndpointAddress() {
+            return hosaEndpointAddress;
+        }
+
+        public Integer getHosaEndpointPort() {
+            return hosaEndpointPort;
+        }
+
+        public String getHosaEndpointUsername() {
+            return hosaEndpointUsername;
+        }
+
+        public String getHosaEndpointPassword() {
+            return hosaEndpointPassword;
+        }
+
+        public Boolean getHosaEndpointUseSSL() {
+            return hosaEndpointUseSSL;
+        }
+
+        public String getHosaEndpointSecurityRealm() {
+            return hosaEndpointSecurityRealm;
+        }
     }
 
     public static class DiagnosticsConfiguration {

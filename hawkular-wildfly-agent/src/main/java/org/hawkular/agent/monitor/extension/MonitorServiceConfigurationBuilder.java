@@ -977,6 +977,12 @@ public class MonitorServiceConfigurationBuilder {
         StorageReportTo type = AgentCoreEngineConfiguration.StorageReportTo.valueOf(typeStr.toUpperCase());
         int connectTimeoutSeconds = getInt(storageAdapterConfig, context, StorageAttributes.CONNECT_TIMEOUT_SECONDS);
         int readTimeoutSeconds = getInt(storageAdapterConfig, context, StorageAttributes.READ_TIMEOUT_SECONDS);
+        String hosaEndpointAddress = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_ADDRESS);
+        int hosaEndpointPort = getInt(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_PORT);
+        String hosaEndpointUsername = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_USERNAME);
+        String hosaEndpointPassword = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_PASSWORD);
+        boolean hosaEndpointUseSSL = getBoolean(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_USE_SSL);
+        String hosaEndpointSecurityRealm = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_SECURITY_REALM);
 
         if (useSSL) {
             if (securityRealm == null) {
@@ -997,7 +1003,9 @@ public class MonitorServiceConfigurationBuilder {
 
         return new StorageAdapterConfiguration(type, username, password, tenantId, feedId, url, useSSL,
                 serverOutboundSocketBindingRef, metricsContext, feedcommContext, hawkularContext,
-                keystorePath, keystorePassword, securityRealm, connectTimeoutSeconds, readTimeoutSeconds);
+                keystorePath, keystorePassword, securityRealm, connectTimeoutSeconds, readTimeoutSeconds,
+                hosaEndpointAddress, hosaEndpointPort, hosaEndpointUsername, hosaEndpointPassword,
+                hosaEndpointUseSSL, hosaEndpointSecurityRealm);
     }
 
     private static GlobalConfiguration determineGlobalConfig(ModelNode config, OperationContext context)
