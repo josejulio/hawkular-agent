@@ -149,12 +149,14 @@ public interface StorageAttributes {
             .setAllowNull(true)
             .setAllowExpression(true)
             .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .setDefaultValue(new ModelNode("0.0.0.0"))
             .build();
     SimpleAttributeDefinition HOSA_ENDPOINT_PORT = new SimpleAttributeDefinitionBuilder("hosa-endpoint-port",
             ModelType.INT)
             .setAllowNull(true)
             .setAllowExpression(true)
             .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+            .setDefaultValue(new ModelNode(8090))
             .build();
     SimpleAttributeDefinition HOSA_ENDPOINT_USERNAME = new SimpleAttributeDefinitionBuilder("hosa-endpoint-username",
             ModelType.STRING)

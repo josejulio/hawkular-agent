@@ -54,6 +54,16 @@
     <artifact name="${httpmime}" />
      -->
 
+    <!-- RestExpress (for HOSA rest server) -->
+    <artifact name="${com.strategicgains:RestExpress}" />
+    <artifact name="${com.strategicgains:RestExpress-Common}" />
+    <artifact name="${com.strategicgains:DateAdapterJ}" />
+    <artifact name="${com.thoughtworks.xstream:xstream}" />
+    <artifact name="${io.netty:netty-all}" />
+    <artifact name="${org.owasp.encoder:encoder}" />
+    <artifact name="${xmlpull:xmlpull}" />
+    <artifact name="${com.jcraft:jzlib}" />
+
   </resources>
 
   <dependencies>

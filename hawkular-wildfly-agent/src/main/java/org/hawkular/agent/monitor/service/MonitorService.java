@@ -275,6 +275,20 @@ public class MonitorService extends AgentCoreEngine implements Service<MonitorSe
                     trustStoreOnly);
         }
 
+        // get the security realm ssl context for the hosa storage adapter (if any)
+        if (storageAdapterConfig.getHosaEndpointSecurityRealm() != null) {
+            InjectedValue<SSLContext> iv = new InjectedValue<>();
+            trustOnlySSLContextInjectedValues.put(storageAdapterConfig.getHosaEndpointSecurityRealm(), iv);
+
+            // We will act as a server
+            boolean trustStoreOnly = false;
+            SSLContextService.ServiceUtil.addDependency(
+                    bldr,
+                    iv,
+                    SecurityRealm.ServiceUtil.createServiceName(storageAdapterConfig.getHosaEndpointSecurityRealm()),
+                    trustStoreOnly);
+        }
+
         // get the security realms for any configured remote servers that require ssl
         for (EndpointConfiguration endpoint : bootConfiguration.getDmrConfiguration().getEndpoints().values()) {
             String securityRealm = endpoint.getSecurityRealm();
