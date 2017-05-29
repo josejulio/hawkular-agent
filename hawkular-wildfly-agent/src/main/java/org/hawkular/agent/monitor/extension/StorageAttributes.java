@@ -168,12 +168,6 @@ public interface StorageAttributes {
             .setAllowExpression(true)
             .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
             .build();
-    SimpleAttributeDefinition HOSA_ENDPOINT_USE_SSL = new SimpleAttributeDefinitionBuilder("hosa-endpoint-use-ssl",
-            ModelType.BOOLEAN)
-            .setAllowNull(true)
-            .setAllowExpression(true)
-            .addFlag(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
-            .build();
     SimpleAttributeDefinition HOSA_ENDPOINT_SECURITY_REALM = new SimpleAttributeDefinitionBuilder("hosa-endpoint-security-realm",
             ModelType.STRING)
             .setAllowNull(true)
@@ -201,7 +195,6 @@ public interface StorageAttributes {
             HOSA_ENDPOINT_PORT,
             HOSA_ENDPOINT_USERNAME,
             HOSA_ENDPOINT_PASSWORD,
-            HOSA_ENDPOINT_USE_SSL,
             HOSA_ENDPOINT_SECURITY_REALM
     };
 

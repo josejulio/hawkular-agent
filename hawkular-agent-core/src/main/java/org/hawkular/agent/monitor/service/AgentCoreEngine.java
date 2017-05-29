@@ -66,6 +66,7 @@ import org.hawkular.agent.monitor.storage.InventoryStorageProxy;
 import org.hawkular.agent.monitor.storage.MetricStorageProxy;
 import org.hawkular.agent.monitor.storage.NotificationDispatcher;
 import org.hawkular.agent.monitor.storage.StorageAdapter;
+import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
 import org.hawkular.agent.monitor.util.Util;
 import org.hawkular.bus.common.BasicMessage;
 import org.jboss.logging.Logger;
@@ -128,6 +129,9 @@ public abstract class AgentCoreEngine {
     // maps whose keys are security realm names and values are SSLContext's and TrustManager's
     private Map<String, SSLContext> trustOnlySSLContextValues;
     private Map<String, TrustManager[]> trustOnlyTrustManagersValues;
+
+    // Used on HOSA mode to publish storage cache
+    private BaseRestServerGenerator baseRestServerGenerator;
 
     public AgentCoreEngine(AgentCoreEngineConfiguration configuration) {
         this.configuration = configuration;
@@ -323,7 +327,20 @@ public abstract class AgentCoreEngine {
                     break;
 
                 case HOSA:
-                    // nothing special needs to be done
+                    // build the HOSA rest server
+                    SSLContext hosaEndpointContext = null;
+                    String hosaEndpointSecurityRealm = configuration.getStorageAdapter().getHosaEndpointSecurityRealm();
+                    if (hosaEndpointSecurityRealm != null) {
+                        hosaEndpointContext = trustOnlySSLContextValues.get(hosaEndpointSecurityRealm);
+                    }
+                    baseRestServerGenerator = new BaseRestServerGenerator(
+                            new BaseRestServerGenerator.Configuration.Builder()
+                                    .username(configuration.getStorageAdapter().getHosaEndpointUsername())
+                                    .password(configuration.getStorageAdapter().getHosaEndpointPassword())
+                                    .address(configuration.getStorageAdapter().getHosaEndpointAddress())
+                                    .port(configuration.getStorageAdapter().getHosaEndpointPort())
+                                    .sslContext(hosaEndpointContext)
+                                    .build());
                     break;
 
                 default:
@@ -580,7 +597,8 @@ public abstract class AgentCoreEngine {
                 configuration.getStorageAdapter(),
                 configuration.getGlobalConfiguration().getAutoDiscoveryScanPeriodSeconds(),
                 diagnostics,
-                httpClientBuilder);
+                httpClientBuilder,
+                baseRestServerGenerator);
 
         // provide our storage adapter to the proxies - allows external apps to use them to store its own data
         metricStorageProxy.setStorageAdapter(storageAdapter);

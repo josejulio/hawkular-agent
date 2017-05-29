@@ -981,7 +981,6 @@ public class MonitorServiceConfigurationBuilder {
         int hosaEndpointPort = getInt(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_PORT);
         String hosaEndpointUsername = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_USERNAME);
         String hosaEndpointPassword = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_PASSWORD);
-        boolean hosaEndpointUseSSL = getBoolean(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_USE_SSL);
         String hosaEndpointSecurityRealm = getString(storageAdapterConfig, context, StorageAttributes.HOSA_ENDPOINT_SECURITY_REALM);
 
         if (useSSL) {
@@ -1005,7 +1004,7 @@ public class MonitorServiceConfigurationBuilder {
                 serverOutboundSocketBindingRef, metricsContext, feedcommContext, hawkularContext,
                 keystorePath, keystorePassword, securityRealm, connectTimeoutSeconds, readTimeoutSeconds,
                 hosaEndpointAddress, hosaEndpointPort, hosaEndpointUsername, hosaEndpointPassword,
-                hosaEndpointUseSSL, hosaEndpointSecurityRealm);
+                hosaEndpointSecurityRealm);
     }
 
     private static GlobalConfiguration determineGlobalConfig(ModelNode config, OperationContext context)

@@ -175,7 +175,6 @@ public class MonitorService extends AgentCoreEngine implements Service<MonitorSe
                             bootStorageAdapter.getHosaEndpointPort(),
                             bootStorageAdapter.getHosaEndpointUsername(),
                             bootStorageAdapter.getHosaEndpointPassword(),
-                            bootStorageAdapter.getHosaEndpointUseSSL(),
                             bootStorageAdapter.getHosaEndpointSecurityRealm());
 
             return bootConfiguration.cloneWith(runtimeStorageAdapter);

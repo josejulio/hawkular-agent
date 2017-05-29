@@ -83,9 +83,6 @@ public class StorageAdapter implements Validatable {
     @JsonProperty("hosa-endpoint-password")
     private StringExpression hosaEndpointPassword;
 
-    @JsonProperty("hosa-endpoint-use-ssl")
-    private BooleanExpression hosaEndpointUseSsl = new BooleanExpression(false);
-
     @JsonProperty("hosa-endpoint-security-realm")
     private String hosaEndpointSecurityRealm;
 
@@ -109,7 +106,6 @@ public class StorageAdapter implements Validatable {
         this.hosaEndpointPort = original.hosaEndpointPort == null ? null : new IntegerExpression(original.hosaEndpointPort);
         this.hosaEndpointUsername = original.hosaEndpointUsername == null ? null : new StringExpression(original.hosaEndpointUsername);
         this.hosaEndpointPassword = original.hosaEndpointPassword == null ? null : new StringExpression(original.hosaEndpointPassword);
-        this.hosaEndpointUseSsl = original.hosaEndpointUseSsl == null ? null : new BooleanExpression(original.hosaEndpointUseSsl);
         this.hosaEndpointSecurityRealm = original.hosaEndpointSecurityRealm;
     }
 
@@ -305,18 +301,6 @@ public class StorageAdapter implements Validatable {
             this.hosaEndpointPassword.set(new StringValue(hosaEndpointPassword));
         } else {
             this.hosaEndpointPassword = new StringExpression(new StringValue(hosaEndpointPassword));
-        }
-    }
-
-    public Boolean getHosaEndpointUseSsl() {
-        return hosaEndpointUseSsl == null ? null : hosaEndpointUseSsl.get();
-    }
-
-    public void setHosaEndpointUseSsl(Boolean hosaEndpointUseSsl) {
-        if (this.hosaEndpointUseSsl != null) {
-            this.hosaEndpointUseSsl.set(hosaEndpointUseSsl);
-        } else {
-            this.hosaEndpointUseSsl = new BooleanExpression(hosaEndpointUseSsl);
         }
     }
 

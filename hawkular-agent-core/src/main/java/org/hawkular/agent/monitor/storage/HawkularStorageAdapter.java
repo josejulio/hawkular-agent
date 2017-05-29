@@ -62,6 +62,7 @@ public class HawkularStorageAdapter implements StorageAdapter {
     private BaseMetricStorage metricStorage;
     private Map<String, String> agentTenantIdHeader;
     private AgentRestServer agentRestServer;
+    private BaseRestServerGenerator baseRestServerGenerator;
 
     public HawkularStorageAdapter() {
     }
@@ -72,11 +73,13 @@ public class HawkularStorageAdapter implements StorageAdapter {
             AgentCoreEngineConfiguration.StorageAdapterConfiguration config,
             int autoDiscoveryScanPeriodSeconds,
             Diagnostics diag,
-            HttpClientBuilder httpClientBuilder) {
+            HttpClientBuilder httpClientBuilder,
+            BaseRestServerGenerator restServerGenerator) {
         this.config = config;
         this.diagnostics = diag;
         this.httpClientBuilder = httpClientBuilder;
         this.agentTenantIdHeader = getTenantHeader(config.getTenantId());
+        this.baseRestServerGenerator = restServerGenerator;
 
         switch (config.getType()) {
             case HAWKULAR:
@@ -108,14 +111,9 @@ public class HawkularStorageAdapter implements StorageAdapter {
                         diagnostics);
 
                 // build the HOSA rest server
-                BaseRestServerGenerator restServerGenerator = new BaseRestServerGenerator(
-                        new BaseRestServerGenerator.Configuration.Builder()
-                                .username(config.getHosaEndpointUsername())
-                                .password(config.getHosaEndpointPassword())
-                                .address(config.getHosaEndpointAddress())
-                                .port(config.getHosaEndpointPort())
-                                .useSSL(config.getHosaEndpointUseSSL())
-                                .build());
+                if (restServerGenerator == null) {
+                    throw new IllegalArgumentException("HOSA mode requires a BaseRestServerGenerator. Please report this bug.");
+                }
                 agentRestServer = new HosaRestServer(
                         restServerGenerator,
                         (CacheMetricStorage) this.metricStorage,

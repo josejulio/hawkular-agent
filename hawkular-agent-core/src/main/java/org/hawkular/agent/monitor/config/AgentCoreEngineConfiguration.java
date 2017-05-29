@@ -78,7 +78,6 @@ public class AgentCoreEngineConfiguration {
         private final Integer hosaEndpointPort;
         private final String hosaEndpointUsername;
         private final String hosaEndpointPassword;
-        private final Boolean hosaEndpointUseSSL;
         private final String hosaEndpointSecurityRealm;
 
         public StorageAdapterConfiguration(
@@ -102,7 +101,6 @@ public class AgentCoreEngineConfiguration {
                 Integer hosaEndpointPort,
                 String hosaEndpointUsername,
                 String hosaEndpointPassword,
-                Boolean hosaEndpointUseSSL,
                 String hosaEndpointSecurityRealm) {
             super();
             this.type = type;
@@ -125,7 +123,6 @@ public class AgentCoreEngineConfiguration {
             this.hosaEndpointPort = hosaEndpointPort;
             this.hosaEndpointUsername = hosaEndpointUsername;
             this.hosaEndpointPassword = hosaEndpointPassword;
-            this.hosaEndpointUseSSL = hosaEndpointUseSSL;
             this.hosaEndpointSecurityRealm = hosaEndpointSecurityRealm;
         }
 
@@ -215,10 +212,6 @@ public class AgentCoreEngineConfiguration {
 
         public String getHosaEndpointPassword() {
             return hosaEndpointPassword;
-        }
-
-        public Boolean getHosaEndpointUseSSL() {
-            return hosaEndpointUseSSL;
         }
 
         public String getHosaEndpointSecurityRealm() {

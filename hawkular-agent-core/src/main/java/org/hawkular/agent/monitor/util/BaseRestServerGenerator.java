@@ -16,8 +16,6 @@
  */
 package org.hawkular.agent.monitor.util;
 
-import java.security.KeyStore;
-
 import javax.net.ssl.SSLContext;
 import javax.xml.bind.DatatypeConverter;
 
@@ -47,9 +45,6 @@ public class BaseRestServerGenerator {
             private int port;
             private String username;
             private String password;
-            private boolean useSSL;
-            private String keystorePath;
-            private String keystorePassword;
             private SSLContext sslContext;
 
             public Builder() {
@@ -57,8 +52,7 @@ public class BaseRestServerGenerator {
             }
 
             public Configuration build() {
-                return new Configuration(address, port, username, password, useSSL, keystorePath,
-                keystorePassword, sslContext);
+                return new Configuration(address, port, username, password, sslContext);
             }
 
             public Builder address(String address) {
@@ -81,22 +75,6 @@ public class BaseRestServerGenerator {
                 return this;
             }
 
-
-            public Builder useSSL(boolean useSSL) {
-                this.useSSL = useSSL;
-                return this;
-            }
-
-            public Builder keystorePath(String keystorePath) {
-                this.keystorePath = keystorePath;
-                return this;
-            }
-
-            public Builder keystorePassword(String keystorePassword) {
-                this.keystorePassword = keystorePassword;
-                return this;
-            }
-
             public Builder sslContext(SSLContext sslContext) {
                 this.sslContext = sslContext;
                 return this;
@@ -107,20 +85,13 @@ public class BaseRestServerGenerator {
         private final int port;
         private final String username;
         private final String password;
-        private final boolean useSSL;
-        private final String keystorePath;
-        private final String keystorePassword;
         private final SSLContext sslContext;
 
-        private Configuration(String address, int port, String username, String password, boolean useSSL,
-                              String keystorePath, String keystorePassword, SSLContext sslContext) {
+        private Configuration(String address, int port, String username, String password, SSLContext sslContext) {
             this.address = address;
             this.port = port;
             this.username = username;
             this.password = password;
-            this.useSSL = useSSL;
-            this.keystorePath = keystorePath;
-            this.keystorePassword = keystorePassword;
             this.sslContext = sslContext;
         }
 
@@ -140,18 +111,6 @@ public class BaseRestServerGenerator {
             return password;
         }
 
-        public boolean isUseSSL() {
-            return useSSL;
-        }
-
-        public String getKeystorePath() {
-            return keystorePath;
-        }
-
-        public String getKeystorePassword() {
-            return keystorePassword;
-        }
-
         public SSLContext getSslContext() {
             return sslContext;
         }
@@ -168,25 +127,7 @@ public class BaseRestServerGenerator {
         restServer.setHostname(configuration.getAddress());
         restServer.setPort(configuration.getPort());
 
-        if (this.configuration.isUseSSL()) {
-            SSLContext theSslContextToUse;
-            if (this.configuration.getSslContext() == null) {
-                if (this.configuration.getKeystorePath() != null) {
-                    KeyStore keyStore = SSLUtil.loadKeystore(this.configuration.getKeystorePath(),
-                        this.configuration.getKeystorePassword());
-                    theSslContextToUse = SSLUtil.buildSSLContext(keyStore, this.configuration.getKeystorePassword(),
-                    null); // No need for a truststore here, as, this is going to act as a server
-                } else {
-                    theSslContextToUse = null; // Rely on the JVM default
-                }
-            } else {
-                theSslContextToUse = this.configuration.getSslContext();
-            }
-
-            if (theSslContextToUse != null) {
-                restServer.setSSLContext(configuration.getSslContext());
-            }
-        }
+        restServer.setSSLContext(this.configuration.getSslContext());
 
         if (this.configuration.getUsername() != null && !this.configuration.getUsername().isEmpty()) {
             restServer.addPreprocessor(new HttpBasicAuthenticationRestServerPreprocessor(

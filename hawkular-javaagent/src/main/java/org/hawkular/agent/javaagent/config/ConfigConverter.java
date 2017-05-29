@@ -129,7 +129,6 @@ public class ConfigConverter {
                 config.getStorageAdapter().getHosaEndpointPort(),
                 config.getStorageAdapter().getHosaEndpointUsername(),
                 config.getStorageAdapter().getHosaEndpointPassword(),
-                config.getStorageAdapter().getHosaEndpointUseSsl(),
                 config.getStorageAdapter().getHosaEndpointSecurityRealm());
 
         ProtocolConfiguration<DMRNodeLocation> dmrConfiguration = buildDmrConfiguration(config);

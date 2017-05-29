@@ -24,6 +24,7 @@ import org.hawkular.agent.monitor.api.MetricStorage;
 import org.hawkular.agent.monitor.api.NotificationStorage;
 import org.hawkular.agent.monitor.config.AgentCoreEngineConfiguration;
 import org.hawkular.agent.monitor.diagnostics.Diagnostics;
+import org.hawkular.agent.monitor.util.BaseRestServerGenerator;
 
 public interface StorageAdapter extends MetricStorage, AvailStorage, InventoryStorage, NotificationStorage {
 
@@ -35,13 +36,15 @@ public interface StorageAdapter extends MetricStorage, AvailStorage, InventorySt
      * @param autoDiscoveryScanPeriodSeconds the auto discovery frequency in seconds
      * @param diag the object used to track internal diagnostic data for the storage adapter
      * @param httpClientBuilder used to communicate with the storage server
+     * @param baseRestServerGenerator used to listen for additional commands being sent to the agent
      */
     void initialize(
             String feedId,
             AgentCoreEngineConfiguration.StorageAdapterConfiguration config,
             int autoDiscoveryScanPeriodSeconds,
             Diagnostics diag,
-            HttpClientBuilder httpClientBuilder);
+            HttpClientBuilder httpClientBuilder,
+            BaseRestServerGenerator baseRestServerGenerator);
 
     /**
      * Clean up and stop whatever the storage adapter is doing.
